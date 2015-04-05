@@ -35,17 +35,16 @@ hiddenComms.lo: hiddenComms.c hiddenComms.h /usr/include/stdlib.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.7/include/mmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.7/include/mm_malloc.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.7/include/emmintrin.h \
- /home/uriel/Dev/mpisrc/FTMPI/ompi/include/mpi.h \
- /home/uriel/Dev/mpisrc/FTMPI/ompi/include/mpi_portable_platform.h \
- /home/uriel/Dev/mpiApps/FTWrkDistr/multiDeviceMgmt/src/deviceMgmt/Device.h \
+ ../../../../ompi/include/mpi.h \
+ ../../../../ompi/include/mpi_portable_platform.h \
+ ../multiDeviceMgmt/deviceMgmt/Device.h \
  ../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
  ../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../multiDeviceMgmt/deviceMgmt/Device.h \
  ../multiDeviceMgmt/deviceMgmt/localDevices.h \
  ../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
- mpiext_XCLFrame_c.h ../multiDeviceMgmt/deviceMgmt/Device.h \
- ../multiDeviceMgmt/deviceMgmt/localDevices.h \
+ mpiext_XCLFrame_c.h ../multiDeviceMgmt/deviceMgmt/localDevices.h \
  ../multiDeviceMgmt/taskMgmt/task.h \
  ../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h \
  ../multiDeviceMgmt/taskMgmt/taskProcedures.h
@@ -144,11 +143,11 @@ hiddenComms.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/4.7/include/emmintrin.h:
 
-/home/uriel/Dev/mpisrc/FTMPI/ompi/include/mpi.h:
+../../../../ompi/include/mpi.h:
 
-/home/uriel/Dev/mpisrc/FTMPI/ompi/include/mpi_portable_platform.h:
+../../../../ompi/include/mpi_portable_platform.h:
 
-/home/uriel/Dev/mpiApps/FTWrkDistr/multiDeviceMgmt/src/deviceMgmt/Device.h:
+../multiDeviceMgmt/deviceMgmt/Device.h:
 
 ../multiDeviceMgmt/deviceMgmt/deviceExploration.h:
 
@@ -163,8 +162,6 @@ hiddenComms.h:
 ../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
 
 mpiext_XCLFrame_c.h:
-
-../multiDeviceMgmt/deviceMgmt/Device.h:
 
 ../multiDeviceMgmt/deviceMgmt/localDevices.h:
 

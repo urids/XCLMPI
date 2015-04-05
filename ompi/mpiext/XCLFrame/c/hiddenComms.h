@@ -15,8 +15,8 @@
 #include <dlfcn.h>
 #include <CL/cl.h>
 
-#include "/home/uriel/Dev/mpisrc/FTMPI/ompi/include/mpi.h"
-#include "/home/uriel/Dev/mpiApps/FTWrkDistr/multiDeviceMgmt/src/deviceMgmt/Device.h"
+#include "ompi/include/mpi.h"
+#include "../multiDeviceMgmt/deviceMgmt/Device.h"
 #include "../multiDeviceMgmt/deviceMgmt/deviceExploration.h"
 #include "../multiDeviceMgmt/deviceMgmt/devicesInitialization.h"
 
