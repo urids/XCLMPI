@@ -6,7 +6,6 @@ extern "C" {
 #endif
 
 #include "ompi_config.h"
-
 OMPI_DECLSPEC int ompi_mpiext_init(void);
 OMPI_DECLSPEC int ompi_mpiext_fini(void);
 

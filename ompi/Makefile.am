@@ -95,7 +95,10 @@ SUBDIRS = \
         $(OMPI_FORTRAN_USEMPIF08_DIR) \
         mpi/fortran/mpiext \
         $(MCA_ompi_FRAMEWORK_COMPONENT_DSO_SUBDIRS) \
-        $(OMPI_CONTRIB_SUBDIRS)
+        $(OMPI_CONTRIB_SUBDIRS) \
+		mpiext/XCLFrame/multiDeviceMgmt \
+        mpiext/XCLFrame/c/binding/dvMgmt \
+        mpiext/XCLFrame/c/binding/tskMgmt
 
 if OMPI_WANT_JAVA_BINDINGS
 SUBDIRS += \
@@ -126,7 +129,7 @@ DIST_SUBDIRS = \
         $(OMPI_MPIEXT_ALL_SUBDIRS) \
         $(MCA_ompi_FRAMEWORKS_SUBDIRS) \
         $(MCA_ompi_FRAMEWORK_COMPONENT_ALL_SUBDIRS) \
-        $(OMPI_CONTRIB_DIST_SUBDIRS)
+        $(OMPI_CONTRIB_DIST_SUBDIRS) 
 
 # Build the main MPI library
 
@@ -154,7 +157,8 @@ libmpi_la_LIBADD += \
 libmpi_la_DEPENDENCIES = $(libmpi_la_LIBADD)
 libmpi_la_LDFLAGS = \
        -version-info $(libmpi_so_version) \
-        $(OMPI_LIBMPI_EXTRA_LDFLAGS)
+        $(OMPI_LIBMPI_EXTRA_LDFLAGS) \
+        -Wl,-rpath,$(libdir)/XCLFrame/binding
 
 # included subdirectory Makefile.am's and appended-to variables
 headers =
