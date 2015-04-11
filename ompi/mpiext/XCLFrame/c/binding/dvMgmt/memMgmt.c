@@ -8,7 +8,7 @@ void initEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSiz
 	void (*initEntitiesBuffer)(int,int,int);
 	char *error;
 
-	meminitHandle=dlopen("/home/uriel/mpiELFs/lib/XCLFrame/multiDeviceMgmt/libmultiDeviceMgmt.so",RTLD_LAZY);
+	meminitHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
 	if(!meminitHandle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);
@@ -33,7 +33,7 @@ void writeEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSi
 	void (*writeEntitiesBuffer)(int,int,int,void**);
 	char *error;
 
-	meminitHandle=dlopen("/home/uriel/mpiELFs/lib/XCLFrame/multiDeviceMgmt/libmultiDeviceMgmt.so",RTLD_LAZY);
+	meminitHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
 	if(!meminitHandle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);
@@ -54,7 +54,7 @@ void readEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSiz
 	void (*readEntitiesBuffer)(int,int,int,void**);
 	char *error;
 
-	memreadHandle=dlopen("/home/uriel/mpiELFs/lib/XCLFrame/multiDeviceMgmt/libmultiDeviceMgmt.so",RTLD_LAZY);
+	memreadHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
 	if(!memreadHandle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);

@@ -44,16 +44,23 @@ void devicesInitialization(CLxplorInfo* xpInfo){
 		for (j = 0; j < deviceCount; j++) {
 
 			cl_device_type devType;
+			cl_ulong maxAllocMemSize=0;
+			cl_ulong globalMemSize=0;
 
 			clGetDeviceInfo(xpInfo->devices[i][j], CL_DEVICE_TYPE,
-					sizeof(cl_device_type), &devType, NULL );
-
+					sizeof(cl_device_type), &devType, NULL );//TODO: assign to Device.h dType
+			clGetDeviceInfo(xpInfo->devices[i][j], CL_DEVICE_MAX_MEM_ALLOC_SIZE,
+					sizeof(cl_ulong), &maxAllocMemSize, NULL );
+			clGetDeviceInfo(xpInfo->devices[i][j], CL_DEVICE_GLOBAL_MEM_SIZE,
+								sizeof(cl_ulong), &globalMemSize, NULL );
 
 
 			if (CL_DEVICE_TYPE_CPU == devType) {
 				cpu[m] = malloc(sizeof(Device));
 				cpu[m]->deviceId = xpInfo->devices[i][j];
 				cpu[m]->platform = (cl_context_properties) xpInfo->platforms[i];
+				cpu[m]->maxAllocMemSize=maxAllocMemSize;
+				cpu[m]->globalMemSize=globalMemSize;
 				createContext(cpu[m]);
 				createQueue(cpu[m]);
 				m++;
@@ -62,6 +69,8 @@ void devicesInitialization(CLxplorInfo* xpInfo){
 				gpu[n] = malloc(sizeof(Device));
 				gpu[n]->deviceId = xpInfo->devices[i][j];
 				gpu[n]->platform = (cl_context_properties) xpInfo->platforms[i];
+				gpu[n]->maxAllocMemSize=maxAllocMemSize;
+				gpu[n]->globalMemSize=globalMemSize;
 				createContext(gpu[n]);
 				createQueue(gpu[n]);
 				n++;
@@ -70,6 +79,8 @@ void devicesInitialization(CLxplorInfo* xpInfo){
 				accel[o] = malloc(sizeof(Device));
 				accel[o]->deviceId = xpInfo->devices[i][j];
 				accel[o]->platform = (cl_context_properties) xpInfo->platforms[i];
+				accel[o]->maxAllocMemSize=maxAllocMemSize;
+				accel[o]->globalMemSize=globalMemSize;
 				createContext(accel[o]);
 				createQueue(accel[o]);
 				o++;

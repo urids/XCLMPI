@@ -8,7 +8,7 @@
 #ifndef BUFFERFUNCTIONS_H_
 #define BUFFERFUNCTIONS_H_
 
-#define DEBUG 0
+
 
 #include <string.h>
 #include <stdio.h>
@@ -17,6 +17,8 @@
 #include "../../taskMgmt/task.h"
 #include "../../errorMgmt/errorHandling.h"
 
-
+extern int numEntitiesInHost;
+extern float entitiesPerTask;
+extern int* DbufferSize; //Device BufferSize
 
 #endif /* BUFFERFUNCTIONS_H_ */

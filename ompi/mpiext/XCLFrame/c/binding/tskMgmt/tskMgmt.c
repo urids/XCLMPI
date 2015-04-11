@@ -7,49 +7,66 @@
 int createTaskList(int devSelection){ //There exist only one taskList per Node runtime and each task has a device.
 int i;
 
-switch (devSelection){
+	switch (devSelection) {
 	case ALL_DEVICES:
-		numTasks=clXplr.numDevices;
-		taskList=(XCLtask*)malloc(sizeof(XCLtask)*numTasks);
 
-			for(i=0;i<numTasks;i++){
-				taskList[i].device=(Device*)malloc(sizeof(Device));
-			}
+		numTasks = clXplr.numDevices;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+		int assigned = 0;
 
-			/*for(i=0;i<clXplr.numCPUS;i++){
-				taskList[i].device=cpu[i];
-			}*/
+		for (i = 0; i < numTasks; i++) {
+			taskList[i].device = (Device*) malloc(sizeof(Device));
+		}
 
-			taskList[0].device=cpu[0];
-			//taskList[0].localID=0;
-			taskList[1].device=gpu[0];
-			//taskList[0].localID=1;
+		for (i = 0; i < clXplr.numGPUS; i++, assigned++) {
+			taskList[assigned].device = cpu[i];
+		}
 
-			/* TODO: check assignment of task to devices
-			for (i = clXplr.numCPUS; i <= clXplr.numGPUS; i++) {
-				taskList[i].device = gpu[i];
-			}
-			for (i = 0; i <= clXplr.numACCEL; i++) {
-				taskList[i].device = accel[i];
-			}*/
+		for (i = 0; i < clXplr.numCPUS; i++, assigned++) {
+			taskList[assigned].device = gpu[i];
+		}
 
+		for (i = 0; i < clXplr.numACCEL; i++, assigned++) {
+			taskList[assigned].device = accel[i];
+		}
 		break;
 
-	case CPU_DEVICES: //TODO: missing implementation
+	case CPU_DEVICES: //TODO: missing multithread.
 		numTasks = clXplr.numCPUS;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+
+		for (i = 0; i < numTasks; i++) {
+			taskList[i].device = (Device*) malloc(sizeof(Device));
+			taskList[i].device = cpu[i];
+		}
+
 		break;
 
-	case GPU_DEVICES: //TODO: missing implementation
+	case GPU_DEVICES:
 		numTasks = clXplr.numGPUS;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+
+		for (i = 0; i < numTasks; i++) {
+			taskList[i].device = (Device*) malloc(sizeof(Device));
+			taskList[i].device = gpu[i];
+		}
+
 		break;
 
-	case ACC_DEVICES: //TODO: missing implementation
+	case ACC_DEVICES:
 		numTasks = clXplr.numACCEL;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+
+		for (i = 0; i < numTasks; i++) {
+			taskList[i].device = (Device*) malloc(sizeof(Device));
+			taskList[i].device = accel[i];
+		}
+
 		break;
 
 	default:
 		break;
-}
+	}
 return 0;
 
 

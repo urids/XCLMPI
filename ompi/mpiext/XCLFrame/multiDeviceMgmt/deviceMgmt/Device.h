@@ -14,9 +14,19 @@
 #define DEBUG  1
 #endif
 
+#ifndef PROFILE
+#define PROFILE  1
+#endif
+
+
 #define debug_print(fmt, ...) \
-        do { if (DEBUG) fprintf(stderr, "%s:%d:%s(): " fmt, __FILE__, \
+        do { if (DEBUG) fprintf(stderr, " AT: %s:%d:%s(): \n " fmt, __FILE__, \
                                 __LINE__, __func__, ##__VA_ARGS__); } while (0)
+
+#define profile_print(fmt, ...) \
+        do { if (PROFILE) fprintf(stderr, " AT: %s:%d:%s(): \n " fmt, __FILE__, \
+                                __LINE__, __func__, ##__VA_ARGS__); } while (0)
+
 
 typedef struct Device_st {
 
@@ -38,6 +48,8 @@ typedef struct Device_st {
 	cl_context_properties cprops[3];
 
 	cl_mem * memHandler; //handler for the memory object (both cpu or gpu mem)
+	cl_ulong maxAllocMemSize;
+	cl_ulong globalMemSize;
 
 } Device;
 

@@ -42,7 +42,7 @@ int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
 
 	(*createTaskList)(devSelection);
 
-/*//TODO: This section is for delagtin master node for load balancing.
+/*//TODO: This section is for delegating master node for load balancing.
 	if (myRank == 0) {
 
 		rcvXploreInfo(comm);
@@ -54,7 +54,7 @@ int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
 	}
 */
 	dlclose(tskMgmt_dlhandle);
-	return MPI_SUCCESS;
+	return numTasks;
 }
 
 

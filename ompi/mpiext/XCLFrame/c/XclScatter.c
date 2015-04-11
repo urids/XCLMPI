@@ -54,7 +54,7 @@ int OMPI_XclScatter(MPI_Comm communicator, const char* fileName, MPI_Datatype MP
     	void (*writeEntitiesBuffer)(int,int,int,void**);
     	char *error;
 
-    	meminitHandle=dlopen("/home/uriel/Dev/mpisrc/FTMPI/ompi/mpiext/FTFrame/c/dvMgmt/libdvMgmt.so",RTLD_NOW);
+    	meminitHandle=dlopen("libdvMgmt.so",RTLD_NOW);
 
     	if(!meminitHandle){
     		perror("library not found or could not be opened __base__");
@@ -84,7 +84,7 @@ int OMPI_XclGather(MPI_Comm comm, int entitiesBufferSize,void **entitiesbuffer){
 	    	void (*readEntitiesBuffer)(int,int,int,void**);
 	    	char *error;
 
-	    	memgatherHandle=dlopen("/home/uriel/Dev/mpisrc/FTMPI/ompi/mpiext/FTFrame/c/dvMgmt/libdvMgmt.so",RTLD_NOW);
+	    	memgatherHandle=dlopen("libdvMgmt.so",RTLD_NOW);
 
 	    	if(!memgatherHandle){
 	    		perror("library not found or could not be opened __base__");

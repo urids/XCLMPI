@@ -1,28 +1,36 @@
 #include "bufferFunctions.h"
+#define DEBUG 0
 
+int numEntitiesInHost;
+float entitiesPerTask;
+int* DbufferSize; //Device BufferSize
 
 int initEntitiesBuffer(int numTasks, int HbufferSize,int MPIentityTypeSize) {
 	int status;
 	int i,j;//index variables
-	//printf(" Debug: %d , %d",numTasks,bufferSize);
 
-	int numEntitiesInHost=(int)HbufferSize/MPIentityTypeSize;
+	numEntitiesInHost = (int) HbufferSize / MPIentityTypeSize;
+	entitiesPerTask = (float) numEntitiesInHost / (float) numTasks;
+	DbufferSize = (int*) malloc(numTasks * sizeof(int)); //Saves the Device BufferSize
 
-	float relation=(float)numEntitiesInHost/(float)numTasks;
 
-	int* DbufferSize=(int*)malloc(numTasks*sizeof(int)); //Device BufferSize
+	for (i = 0; i < numTasks; i++) {
+		if(DbufferSize<=taskList[i].device->maxAllocMemSize){
+			printf("enough Space =) %d in Host  %d Max Alloc in Device %d Max Device Space \n",HbufferSize,taskList[i].device->maxAllocMemSize, taskList[i].device->globalMemSize);
+		}
+	}
+
+
 	for(j=0;j<numTasks;j++){
-	(j==(numTasks-1))?((int)floorf(relation)*MPIentityTypeSize):((int)ceilf(relation)*MPIentityTypeSize);
+		(j==(numTasks-1))?(DbufferSize[j]=(int)floorf(entitiesPerTask)*MPIentityTypeSize):(DbufferSize[j]=(int)ceilf(entitiesPerTask)*MPIentityTypeSize);
 	}
 
 
 	for (i = 0; i < numTasks; i++) {
-		//int numBuffers = taskList[j].kernel[0].numArgs - num_consts;
 		taskList[i].entitiesbuffer = malloc(sizeof(XCLbuffer));
 		taskList[i].device[0].memHandler=malloc(sizeof(cl_mem));
 
-			//taskList[i].entitiesbuffer->size  = DbufferSize[i]+5000;
-			taskList[i].entitiesbuffer->size  = HbufferSize;
+			taskList[i].entitiesbuffer->size  = DbufferSize[i];
 			taskList[i].entitiesbuffer->bufferMode = CL_MEM_READ_WRITE;
 
 			taskList[i].device[0].memHandler[0] = clCreateBuffer(
@@ -32,7 +40,7 @@ int initEntitiesBuffer(int numTasks, int HbufferSize,int MPIentityTypeSize) {
 
 
 		chkerr(status, "Error at: Creating mem Buffers", __FILE__, __LINE__);
-
+		debug_print("allocated: %zd \n" ,taskList[i].entitiesbuffer->size);
 	}
 
 	return status;

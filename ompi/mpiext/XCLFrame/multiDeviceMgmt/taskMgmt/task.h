@@ -22,7 +22,7 @@ typedef struct Xcode_st{
 
 typedef struct Xbuffer_st{
 	int bufferMode;
-	uint size;
+	size_t size;
 	void ** data;
 }XCLbuffer;
 
@@ -50,8 +50,7 @@ typedef struct XCLtask_st{
 	int numKernels; //must be passed as parameter at task startup
 	XCLkernel* kernel;
 
-	XCLbuffer *entitiesbuffer; //buffer for the entities  assigned to this kernel.
-	//taskFunctions_t* taskFunctions;
+	XCLbuffer *entitiesbuffer; //buffer for the entities assigned to this task.
 
 }XCLtask;
 

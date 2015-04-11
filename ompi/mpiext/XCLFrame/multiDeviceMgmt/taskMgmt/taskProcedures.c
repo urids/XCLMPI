@@ -9,7 +9,8 @@
 #include "../deviceMgmt/localDevices.h"
 #include "../deviceMgmt/memMgmt/bufferFunctions.h"
 
-
+#define DEBUG 0
+#define PROFILE 1
 
 int createProgram(char* srcPath,int numTasks){
 	int status;
@@ -130,7 +131,7 @@ int setKernelArgs(int numTasks,int numparameter,int paramSize,void* paramValue){
 				chkerr(status, "error at: Setting other kernel Args", __FILE__, __LINE__);
 		}
 	}
-
+	debug_print("setArgs successful..\n");
 	return status;
 }
 
@@ -138,11 +139,32 @@ int setKernelArgs(int numTasks,int numparameter,int paramSize,void* paramValue){
 int enqueueKernel(int numTasks, const size_t globalThreads, const size_t localThreads) {
 	int status;
 	int i;
+
+
 	for(i=0;i<numTasks;i++){
+	cl_event kernelProfileEvent;
+	cl_ulong time_start, time_end;
+	double total_time;
+
 	status = clEnqueueNDRangeKernel(taskList[i].device[0].queue, taskList[i].kernel[0].kernel, 1, NULL,
-			&globalThreads, &localThreads, 0, NULL, NULL);
+			&globalThreads, &localThreads, 0, NULL, &kernelProfileEvent);
 	chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
+
+	debug_print("Enqueuing Kernel successful..\n");
+
+
+	#if PROFILE
+	clWaitForEvents(1 , &kernelProfileEvent);
+	clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+	clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
+	total_time = time_end - time_start;
+	profile_print("Execution time of task: %d -->  %0.3f ms\n",i,(total_time / 1000000.0));
+	#endif //if PROFILE
+
 	}
+
+
+
 	return status;
 }
 
