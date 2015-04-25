@@ -28,6 +28,8 @@
 #include "../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h"
 #include "../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h"
 
+//#include "../../singleSidedComms/XclScatter.h"
+
 extern int numTasks;  //This will be defined in late.c and is property of the runtime system.
 
 #endif /* TKMGMT_H_ */

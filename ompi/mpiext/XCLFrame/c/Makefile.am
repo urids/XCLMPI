@@ -9,7 +9,7 @@ noinst_LTLIBRARIES = libmpiext_XCLFrame_c.la
 ompidir = $(ompiincludedir)/ompi/mpiext/XCLFrame/c
 
 # This is the header file that is installed.
-ompi_HEADERS = mpiext_XCLFrame_c.h hiddenComms.h XclScatter.h
+ompi_HEADERS = mpiext_XCLFrame_c.h hiddenComms.h singleSidedComms/XclScatter.h
 
 # Sources for the convenience libtool library.  Other than the one
 # header file, all source files in the extension have no file naming
@@ -19,6 +19,7 @@ libmpiext_XCLFrame_c_la_SOURCES = \
         mpiext_XCLFrame_early.c \
         mpiext_XCLFrame_late.c \
         hiddenComms.c \
-        XclScatter.c
+        singleSidedComms/XclScatter.c \
+        singleSidedComms/singleSidedComms.c
        
 libmpiext_XCLFrame_c_la_LDFLAGS = -module -avoid-version -ldl 

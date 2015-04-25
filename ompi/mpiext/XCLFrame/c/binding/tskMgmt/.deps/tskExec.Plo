@@ -50,8 +50,7 @@ tskExec.lo: tskExec.c tskMgmt.h \
  ../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
  ../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
- ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
- ../../XclScatter.h ../../binding/tskMgmt/tskMgmt.h
+ ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h
 
 tskMgmt.h:
 
@@ -182,7 +181,3 @@ tskMgmt.h:
 ../../../multiDeviceMgmt/deviceMgmt/localDevices.h:
 
 ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
-
-../../XclScatter.h:
-
-../../binding/tskMgmt/tskMgmt.h:

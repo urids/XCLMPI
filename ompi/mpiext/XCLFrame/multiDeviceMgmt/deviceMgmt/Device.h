@@ -48,6 +48,7 @@ typedef struct Device_st {
 	cl_context_properties cprops[3];
 
 	cl_mem * memHandler; //handler for the memory object (both cpu or gpu mem)
+	int numcl_memObj;
 	cl_ulong maxAllocMemSize;
 	cl_ulong globalMemSize;
 

@@ -1,26 +1,29 @@
 
 #include "tskMgmt.h"
-#include "../../XclScatter.h"
+
 
 /* int XclExecKernel(MPI_Comm communicator, const char * fmt, ...)
     __attribute__((format (printf, 2, 3)));*/
 
 //#define OMPI_XclExecKernel(dataFilePath , fmt, ...) _OMPI_XclExecKernel(dataFilePath , fmt,  ##__VA_ARGS__)
 
- int XclExecKernel(MPI_Comm comm, int globalThreads, int localThreads, const char * fmt, va_list arg) {
+ int XclExecKernel(MPI_Comm comm, int selTask, int globalThreads, int localThreads, const char * fmt, va_list arg) {
 	int numParam = 0;
 	const char *p;
 	int j, k; //index exclusive
 	int i;
+	int tray;
 	double dd;
 	float f;
 	unsigned u;
 	char *s;
 
+	cl_mem* memObj=malloc(sizeof(cl_mem));
 
 	void *dlhandle;
 	int (*setKernelArgs)(int, int, int, void*);
-	int (*enqueueKernel)(int numTasks, const size_t globalThreads, const size_t localThreads);
+	int (*setKernelmemObj)(int,int,int,int);
+	int (*enqueueKernel)(int numTasks,int selTask, const size_t globalThreads, const size_t localThreads);
 	char *error;
 
 	///home/uriel/Dev/mpiApps/FTWrkDistr/multiDeviceMgmt/Debug/
@@ -32,6 +35,7 @@
 	}
 
 	setKernelArgs = dlsym(dlhandle, "setKernelArgs");
+	setKernelmemObj=dlsym(dlhandle, "setKernelmemObj");
 	enqueueKernel= dlsym(dlhandle,"enqueueKernel");
 
 	if ((error = dlerror()) != NULL ) {
@@ -39,9 +43,6 @@
 		exit(1);
 	}
 
-int a=10; //TODO: fix this.
-	(*setKernelArgs)(numTasks,numParam,sizeof(int),&a); //this is the call to set the entities buffer
-	numParam++;
 
   int numConsts=0;
 
@@ -81,6 +82,22 @@ int a=10; //TODO: fix this.
 			numConsts++;
 			debug_print("\n Debug: argument type: string, arg number: %d, value: %s \n",numParam, s);
 			break;
+		/*case 'M':
+			*memObj = va_arg (arg, cl_mem);
+			(*setKernelArgs)(numTasks, numParam, sizeof(cl_mem), (void*)memObj);
+			numParam++;
+			numConsts++;
+			debug_print(
+					"\n Debug: argument type: cl_mem, arg number: %d, value: abstract  \n",
+					numParam);
+			break;*/
+		case 'T':
+			tray = va_arg(arg, int);
+			(*setKernelmemObj)(numTasks, numParam, sizeof(cl_mem), tray);
+			numParam++;
+			numConsts++;
+			debug_print("\n Debug: argument type: cl_mem, arg number: %d, value: abstract  \n",numParam);
+			break;
 
 		case '%':
 			putchar('%');
@@ -88,7 +105,7 @@ int a=10; //TODO: fix this.
 		}
 	}
 
-	(*enqueueKernel)(numTasks, globalThreads, localThreads);
+	(*enqueueKernel)(numTasks,selTask, globalThreads, localThreads);
 
   return 0;
 

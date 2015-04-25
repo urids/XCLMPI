@@ -2,72 +2,80 @@
 
 #include "dvMgmt.h"
 
-void initEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSize){
+//void initEntitiesBuffer(int numtasks,int HentitiesbufferSize,int MPIentityTypeSize,cl_mem *memObjects){
 
-	void * meminitHandle=NULL;
-	void (*initEntitiesBuffer)(int,int,int);
+void * BIND2MULTIDEV_Handle=NULL;
+
+void ALL_TASK_initBuffer(int numtasks, int trayIdx, int HentitiesbufferSize, int MPIentityTypeSize){
+
+
+	void (*initEntitiesBuffer)(int,int,int, int trayIdx);
 	char *error;
 
-	meminitHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
+	BIND2MULTIDEV_Handle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
-	if(!meminitHandle){
+	if(!BIND2MULTIDEV_Handle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);
 		exit(1);
 	}
 
-	initEntitiesBuffer = dlsym(meminitHandle, "initEntitiesBuffer");
+	initEntitiesBuffer = dlsym(BIND2MULTIDEV_Handle, "ALL_TASKS_initBuffer");
 	if ((error = dlerror()) != NULL ) {
 		fputs(error, stderr);
 		exit(1);
 	}
 
-	(*initEntitiesBuffer)(numtasks,entitiesbufferSize,MPIentityTypeSize);
+	(*initEntitiesBuffer)(numtasks,trayIdx, HentitiesbufferSize, MPIentityTypeSize);
 
+	//TODO: release the BIND2MULTIDEV_Handle.
 }
 
 
-void writeEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSize, void ** entitiesbuffer ){
+void ALL_TASK_writeBuffer(int numtasks, int trayIdx, void * entitiesbuffer ){
 
 
-	void * meminitHandle=NULL;
-	void (*writeEntitiesBuffer)(int,int,int,void**);
+	void * memWrtHandle=NULL;
+	void (*writeEntitiesBuffer)(int,int,void*);
 	char *error;
 
-	meminitHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
+	memWrtHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
-	if(!meminitHandle){
+	if(!memWrtHandle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);
 		exit(1);
 	}
 
-	writeEntitiesBuffer = dlsym(meminitHandle, "writeEntitiesBuffer");
+	writeEntitiesBuffer = dlsym(memWrtHandle, "ALL_TASKS_writeBuffer");
 	if ((error = dlerror()) != NULL ) {
 		fputs(error, stderr);
 		exit(1);
 	}
 
-	(*writeEntitiesBuffer)(numtasks,entitiesbufferSize,MPIentityTypeSize,entitiesbuffer);
+	(*writeEntitiesBuffer)(numtasks,trayIdx,entitiesbuffer);
 }
-void readEntitiesBuffer(int numtasks,int entitiesbufferSize,int MPIentityTypeSize, void ** entitiesbuffer){
 
-	void * memreadHandle=NULL;
-	void (*readEntitiesBuffer)(int,int,int,void**);
+
+
+void ALL_TASKS_readBuffer(int numtasks,int trayIdx, void * entitiesbuffer){
+
+	void * memReadHandle=NULL;
+	void (*readEntitiesBuffer)(int,int,void*);
 	char *error;
 
-	memreadHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
+	memReadHandle=dlopen("libmultiDeviceMgmt.so",RTLD_LAZY);
 
-	if(!memreadHandle){
+	if(!memReadHandle){
 		printf("library not found or could not be opened %d, %d" ,__FILE__, __LINE__);
 		exit(1);
 	}
 
-	readEntitiesBuffer = dlsym(memreadHandle, "readEntitiesBuffer");
+	readEntitiesBuffer = dlsym(memReadHandle, "ALL_TASKS_readBuffer");
 	if ((error = dlerror()) != NULL ) {
 		fputs(error, stderr);
 		exit(1);
 	}
 
-	(*readEntitiesBuffer)(numtasks,entitiesbufferSize,MPIentityTypeSize,entitiesbuffer);
+	(*readEntitiesBuffer)(numtasks,trayIdx,entitiesbuffer);
 
 }
 

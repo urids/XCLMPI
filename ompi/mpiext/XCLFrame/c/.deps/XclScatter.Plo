@@ -51,7 +51,8 @@ XclScatter.lo: XclScatter.c XclScatter.h /usr/include/stdlib.h \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
- binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h
+ binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
+ entityInfo.h
 
 XclScatter.h:
 
@@ -184,3 +185,5 @@ binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h:
 binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h:
 
 binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
+
+entityInfo.h:

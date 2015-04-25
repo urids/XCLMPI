@@ -112,34 +112,42 @@ int kernelXplor(int numTasks){
 return status;
 }
 
+int setKernelmemObj(int numTasks,int numparameter,int paramSize,int trayIdx){
+	int status;
+	int i;
+
+	for (i = 0; i < numTasks; i++) {
+	debug_print("\n Debug: setting cl_mem arg: %d in task %d\n", numparameter, i);
+
+		status = clSetKernelArg(taskList[i].kernel[0].kernel, numparameter,
+				paramSize, &taskList[i].device[0].memHandler[trayIdx]);
+	chkerr(status, "error at: Setting entity buffer Arg.", __FILE__, __LINE__);
+	}
+	return 0;
+}
+
 int setKernelArgs(int numTasks,int numparameter,int paramSize,void* paramValue){
 	int status;
 	int i;
 
-	if(numparameter==0){ // TODO: the parameter 0 is always the entities buffer???
-		for(i=0;i<numTasks;i++){
-			debug_print("\n Debug: setting arg: %d \n",numparameter);
-			status = clSetKernelArg(taskList[i].kernel[0].kernel, 0, sizeof(cl_mem),
-						   & taskList[i].device[0].memHandler[0]);
-			chkerr(status, "error at: Setting entity buffer Arg.", __FILE__, __LINE__);
-		}
-	}else{
-		for(i=0;i<numTasks;i++){
-			debug_print("\n Debug: setting arg: %d \n",numparameter);
-				status = clSetKernelArg(taskList[i].kernel[0].kernel, numparameter, paramSize,
-					 (void *) paramValue);
-				chkerr(status, "error at: Setting other kernel Args", __FILE__, __LINE__);
-		}
+	for (i = 0; i < numTasks; i++) {
+		debug_print("\n Debug: setting arg: %d in task %d ,%d \n", numparameter,
+				i, paramSize);
+		status = clSetKernelArg(taskList[i].kernel[0].kernel, numparameter,
+				paramSize, (void *) paramValue);
+		chkerr(status, "error at: Setting other kernel Args", __FILE__,	__LINE__);
 	}
-	debug_print("setArgs successful..\n");
+
+	debug_print("set Args %d successful..\n",numparameter);
 	return status;
 }
 
 
-int enqueueKernel(int numTasks, const size_t globalThreads, const size_t localThreads) {
+int enqueueKernel(int numTasks,int selTask, const size_t globalThreads, const size_t localThreads) {
 	int status;
 	int i;
 
+if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 	for(i=0;i<numTasks;i++){
 	cl_event kernelProfileEvent;
@@ -160,11 +168,30 @@ int enqueueKernel(int numTasks, const size_t globalThreads, const size_t localTh
 	total_time = time_end - time_start;
 	profile_print("Execution time of task: %d -->  %0.3f ms\n",i,(total_time / 1000000.0));
 	#endif //if PROFILE
-
 	}
 
+}else{
+
+	cl_event kernelProfileEvent;
+		cl_ulong time_start, time_end;
+		double total_time;
+
+		status = clEnqueueNDRangeKernel(taskList[selTask].device[0].queue, taskList[selTask].kernel[0].kernel, 1, NULL,
+				&globalThreads, &localThreads, 0, NULL, &kernelProfileEvent);
+		chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
+
+		debug_print("Enqueuing Kernel successful..\n");
+
+		#if PROFILE
+		clWaitForEvents(1 , &kernelProfileEvent);
+		clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+		clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
+		total_time = time_end - time_start;
+		profile_print("Execution time of task: %d -->  %0.3f ms\n",selTask,(total_time / 1000000.0));
+		#endif //if PROFILE
 
 
+}
 	return status;
 }
 

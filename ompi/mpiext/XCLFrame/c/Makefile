@@ -323,9 +323,11 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmpiext_XCLFrame_c_la_LIBADD =
 am__objects_1 =
+am__dirstamp = $(am__leading_dot)dirstamp
 am_libmpiext_XCLFrame_c_la_OBJECTS = $(am__objects_1) \
 	mpiext_XCLFrame_early.lo mpiext_XCLFrame_late.lo \
-	hiddenComms.lo XclScatter.lo
+	hiddenComms.lo singleSidedComms/XclScatter.lo \
+	singleSidedComms/singleSidedComms.lo
 libmpiext_XCLFrame_c_la_OBJECTS =  \
 	$(am_libmpiext_XCLFrame_c_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -1494,7 +1496,7 @@ noinst_LTLIBRARIES = libmpiext_XCLFrame_c.la
 ompidir = $(ompiincludedir)/ompi/mpiext/XCLFrame/c
 
 # This is the header file that is installed.
-ompi_HEADERS = mpiext_XCLFrame_c.h hiddenComms.h XclScatter.h
+ompi_HEADERS = mpiext_XCLFrame_c.h hiddenComms.h singleSidedComms/XclScatter.h
 
 # Sources for the convenience libtool library.  Other than the one
 # header file, all source files in the extension have no file naming
@@ -1504,7 +1506,8 @@ libmpiext_XCLFrame_c_la_SOURCES = \
         mpiext_XCLFrame_early.c \
         mpiext_XCLFrame_late.c \
         hiddenComms.c \
-        XclScatter.c
+        singleSidedComms/XclScatter.c \
+        singleSidedComms/singleSidedComms.c
 
 libmpiext_XCLFrame_c_la_LDFLAGS = -module -avoid-version -ldl 
 all: all-am
@@ -1552,19 +1555,33 @@ clean-noinstLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+singleSidedComms/$(am__dirstamp):
+	@$(MKDIR_P) singleSidedComms
+	@: > singleSidedComms/$(am__dirstamp)
+singleSidedComms/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) singleSidedComms/$(DEPDIR)
+	@: > singleSidedComms/$(DEPDIR)/$(am__dirstamp)
+singleSidedComms/XclScatter.lo: singleSidedComms/$(am__dirstamp) \
+	singleSidedComms/$(DEPDIR)/$(am__dirstamp)
+singleSidedComms/singleSidedComms.lo:  \
+	singleSidedComms/$(am__dirstamp) \
+	singleSidedComms/$(DEPDIR)/$(am__dirstamp)
 libmpiext_XCLFrame_c.la: $(libmpiext_XCLFrame_c_la_OBJECTS) $(libmpiext_XCLFrame_c_la_DEPENDENCIES) $(EXTRA_libmpiext_XCLFrame_c_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmpiext_XCLFrame_c_la_LINK)  $(libmpiext_XCLFrame_c_la_OBJECTS) $(libmpiext_XCLFrame_c_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f singleSidedComms/*.$(OBJEXT)
+	-rm -f singleSidedComms/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/XclScatter.Plo
 include ./$(DEPDIR)/hiddenComms.Plo
 include ./$(DEPDIR)/mpiext_XCLFrame_early.Plo
 include ./$(DEPDIR)/mpiext_XCLFrame_late.Plo
+include singleSidedComms/$(DEPDIR)/XclScatter.Plo
+include singleSidedComms/$(DEPDIR)/singleSidedComms.Plo
 
 .c.o:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1595,6 +1612,7 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf singleSidedComms/.libs singleSidedComms/_libs
 install-ompiHEADERS: $(ompi_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(ompi_HEADERS)'; test -n "$(ompidir)" || list=; \
@@ -1747,6 +1765,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f singleSidedComms/$(DEPDIR)/$(am__dirstamp)
+	-rm -f singleSidedComms/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1757,7 +1777,7 @@ clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) singleSidedComms/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1803,7 +1823,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ./$(DEPDIR) singleSidedComms/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -55,6 +55,8 @@ void devicesInitialization(CLxplorInfo* xpInfo){
 								sizeof(cl_ulong), &globalMemSize, NULL );
 
 
+
+
 			if (CL_DEVICE_TYPE_CPU == devType) {
 				cpu[m] = malloc(sizeof(Device));
 				cpu[m]->deviceId = xpInfo->devices[i][j];

@@ -1,10 +1,10 @@
 
 #include "tskMgmt.h"
 
+//this file performs Task<->Device matching
 
 
-
-int createTaskList(int devSelection){ //There exist only one taskList per Node runtime and each task has a device.
+int createTaskList(int devSelection){ //There exist only one taskList per Node and each task has a device.
 int i;
 
 	switch (devSelection) {
@@ -15,19 +15,22 @@ int i;
 		int assigned = 0;
 
 		for (i = 0; i < numTasks; i++) {
-			taskList[i].device = (Device*) malloc(sizeof(Device));
+			taskList[i].device = (Device*) malloc(1*sizeof(Device)); //each task has only 1 device.
 		}
 
 		for (i = 0; i < clXplr.numGPUS; i++, assigned++) {
 			taskList[assigned].device = cpu[i];
+			taskList[assigned].device->numcl_memObj=0; //init the number of device memBuffers to zero
 		}
 
 		for (i = 0; i < clXplr.numCPUS; i++, assigned++) {
 			taskList[assigned].device = gpu[i];
+			taskList[assigned].device->numcl_memObj=0;
 		}
 
 		for (i = 0; i < clXplr.numACCEL; i++, assigned++) {
 			taskList[assigned].device = accel[i];
+			taskList[assigned].device->numcl_memObj=0;
 		}
 		break;
 
@@ -38,8 +41,9 @@ int i;
 		for (i = 0; i < numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = cpu[i];
+			taskList[i].device->numcl_memObj=0;//init the number of device memBuffers to zero
 		}
-
+		taskList[i].device->numcl_memObj=0;
 		break;
 
 	case GPU_DEVICES:
@@ -49,6 +53,7 @@ int i;
 		for (i = 0; i < numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = gpu[i];
+			taskList[i].device->numcl_memObj=0;//init the number of device memBuffers to zero
 		}
 
 		break;
@@ -60,6 +65,7 @@ int i;
 		for (i = 0; i < numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = accel[i];
+			taskList[i].device->numcl_memObj=0;//init the number of device memBuffers to zero
 		}
 
 		break;
