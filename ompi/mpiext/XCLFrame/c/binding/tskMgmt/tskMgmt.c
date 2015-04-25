@@ -43,7 +43,7 @@ int i;
 			taskList[i].device = cpu[i];
 			taskList[i].device->numcl_memObj=0;//init the number of device memBuffers to zero
 		}
-		taskList[i].device->numcl_memObj=0;
+
 		break;
 
 	case GPU_DEVICES:
