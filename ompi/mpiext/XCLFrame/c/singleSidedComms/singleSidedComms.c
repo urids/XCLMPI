@@ -70,7 +70,7 @@ int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * ho
 int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_task, int g_dest_task, int TAG, MPI_Comm comm){
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
-	//if (myRank == g_taskList[g_src_task].r_rank) {
+	if (myRank == g_taskList[g_src_task].r_rank) {
 		void* tmpBuffData;
 		int tmpBuffSz = count * MPIentityTypeSize;
 		tmpBuffData = (void*) malloc(tmpBuffSz);
@@ -107,7 +107,7 @@ int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 		//MPI_Recv(&ack,1,MPI_INT,dest_rank,88,comm,MPI_STATUS_IGNORE);
 		//MPI_Wait(&request,&status);
 
-	//}
+	}
 	//TODO:free tmpBuffData.
 	return 0;
 
@@ -117,7 +117,7 @@ int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 int OMPI_XclRecv(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_task, int g_recv_task, int TAG,MPI_Comm comm) {
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
-	//if (myRank == g_taskList[g_recv_task].r_rank) {
+	if (myRank == g_taskList[g_recv_task].r_rank) {
 		void* tmpBuffData;
 		int tmpBuffSz = count * MPIentityTypeSize; //buffer size in bytes.
 		tmpBuffData = (void*) malloc(tmpBuffSz);
@@ -158,7 +158,7 @@ int OMPI_XclRecv(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 		int l_recv_task = g_taskList[g_recv_task].l_taskIdx;
 		(*initNewBuffer)(l_recv_task, trayIdx, tmpBuffSz);
 		(*writeBuffer)(l_recv_task, trayIdx, tmpBuffSz, tmpBuffData);
-	//}
+	}
 	return 0;
 }
 

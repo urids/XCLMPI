@@ -269,10 +269,7 @@ int XclWaitAllTasks(int numTasks,MPI_Comm comm){
 /*	for(i=0;i<numTasks;i++){
 		pthread_detach(thds[i]);
 	}*/
-
-	printf("--------------- %d tasks -------------------\n",numTasks);
 	return 0;
-
 }
 
 
