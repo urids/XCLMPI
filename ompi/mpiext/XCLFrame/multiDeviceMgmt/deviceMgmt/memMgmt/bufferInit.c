@@ -3,39 +3,50 @@
 
 int numEntitiesInHost;
 float entitiesPerTask;
-int* DbufferSize; //Device BufferSize global variable declared in bufferFunctions.h
+int* tskbufferSize; //Device BufferSize global variable declared in bufferFunctions.h
+
+/* *
+ * Buffer initialization has two stages:
+ * 1.- Rack initialization (DONE in tskMgmt.c at task<->Device matching )
+ * 2.- Trays initialization.
+ * */
 
 int initNewBuffer(int taskIdx, int trayIdx, int bufferSize ){
 
 	cl_mem * tmpMemHandler=NULL;
 	int status;
 
-	int memIdx=taskList[taskIdx].device[0].numcl_memObj; //here we query how many buffers exist in this device
+	int memIdx=taskList[taskIdx].numTrays; //here we query how many buffers has this task
+	int myRack=taskList[taskIdx].Rack;
+	//printf("initializing ::: task: %d rack: %d tray: %d :::\n",taskIdx,myRack,trayIdx);
 
-	if (memIdx < trayIdx) { //strictly less to avoid reallocations
+
+	if ( (trayIdx+1) > memIdx ) { //strictly great to avoid reallocations
 		cl_mem * tmpMemHandler;
-		tmpMemHandler = realloc(taskList[taskIdx].device[0].memHandler,
+		tmpMemHandler = realloc(taskList[taskIdx].device[0].memHandler[myRack],
 				(trayIdx + 1) * sizeof(cl_mem)); //(tray + 1) to avoid dereferencing issues.
+
 		if (tmpMemHandler != NULL){
-			taskList[taskIdx].device[0].memHandler = tmpMemHandler;
-			taskList[taskIdx].device[0].numcl_memObj=(trayIdx+1); //here we inform to the runtime that this device has increased its number of memObjs
+			taskList[taskIdx].device[0].memHandler[myRack] = tmpMemHandler;
+			taskList[taskIdx].numTrays=(memIdx+1); //here we inform to the runtime that this device has increased its number of memObjs
+			debug_print("init DONE ::: task: %d rack: %d tray: %d :::\n",taskIdx,myRack,trayIdx);
 		}else{
-			free(taskList[taskIdx].device[0].memHandler);
+			free(taskList[taskIdx].device[0].memHandler[myRack]);
 			printf("Error AT:(re)allocating memory %s ,%s",__FILE__,__LINE__);
 			exit(1);
 		}
 		//free(tmpMemHandler); TODO: is it now ready to free?
 	} if (trayIdx==0 && memIdx==0){ //if this is the first tray to be initialized.
-		taskList[taskIdx].entitiesbuffer = malloc(sizeof(XCLbuffer));
-		taskList[taskIdx].device[0].memHandler = malloc(1 * sizeof(cl_mem)); //init the first device mem space.
-		taskList[taskIdx].device[0].numcl_memObj=1;
+		taskList[taskIdx].trayInfo = malloc(sizeof(XCLTrayInfo));
+		taskList[taskIdx].device[0].memHandler[myRack] = malloc(1 * sizeof(cl_mem)); //init the first device mem space.
+		taskList[taskIdx].numTrays=1;
 	}
 
+	//TODO: missing trayInfo space allocation
+    //taskList[taskIdx].trayInfo->size = bufferSize;
+	//taskList[taskIdx].trayInfo->bufferMode = CL_MEM_READ_WRITE;
 
-    taskList[taskIdx].entitiesbuffer->size = bufferSize;
-	taskList[taskIdx].entitiesbuffer->bufferMode = CL_MEM_READ_WRITE;
-
-	taskList[taskIdx].device[0].memHandler[trayIdx] = clCreateBuffer(
+	taskList[taskIdx].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
 			taskList[taskIdx].device[0].context,
 			CL_MEM_READ_WRITE,
 			bufferSize,
@@ -49,13 +60,17 @@ return status;
 }
 
 // HbufferSize &  MPIentityTypeSize enables determine the hostBuffer offset for each task
+// Hbuffer is the complete buffer residing in this rank.
 int  ALL_TASKS_initBuffer(int numTasks,int trayIdx, int HbufferSize, int MPIentityTypeSize) {
-	int status;
+	int status=0;
 	int i,j;//index variables
+
+	//if(taskList[i].device[0].memHandler==NULL)
+		//taskList[i].device[0].memHandler = (cl_mem**)malloc(numTasks * sizeof(cl_mem*));
 
 	numEntitiesInHost = (int) HbufferSize / MPIentityTypeSize;
 	entitiesPerTask = (float) numEntitiesInHost / (float) numTasks;
-	DbufferSize = (int*) malloc(numTasks * sizeof(int)); //Saves the Device BufferSize
+	tskbufferSize = (int*) malloc(numTasks * sizeof(int)); //Saves the Device BufferSize
 
 
 
@@ -70,48 +85,44 @@ int  ALL_TASKS_initBuffer(int numTasks,int trayIdx, int HbufferSize, int MPIenti
 */
 
 	for(j=0;j<numTasks;j++){ //TODO: make this more readable: This instruction sets the size of the device memory buffer for each task.
-		(j==(numTasks-1))?(DbufferSize[j]=(int)floorf(entitiesPerTask)*MPIentityTypeSize):(DbufferSize[j]=(int)ceilf(entitiesPerTask)*MPIentityTypeSize);
+		(j==(numTasks-1))?(tskbufferSize[j]=(int)floorf(entitiesPerTask)*MPIentityTypeSize):(tskbufferSize[j]=(int)ceilf(entitiesPerTask)*MPIentityTypeSize);
 	}
 
-//cl_mem* memObjects = malloc(numTasks*sizeof(cl_mem));
-	for (i = 0; i < numTasks; i++) {
-		int memIdx = taskList[i].device[0].numcl_memObj; //here we query how many buffers exist in this device
 
+	for (i = 0; i < numTasks; i++) {
+		int memIdx = taskList[i].numTrays; //here we query how many buffers exist in this device
+		int myRack=taskList[i].Rack;
 		if (memIdx < trayIdx){ //strictly less to avoid reallocations
 			cl_mem * tmpMemHandler;
-			tmpMemHandler = realloc(taskList[i].device[0].memHandler,
+			tmpMemHandler = realloc(taskList[i].device[0].memHandler[myRack],
 					(trayIdx+1) * sizeof(cl_mem)); //(tray + 1) to avoid dereferencing issues.
 			if (tmpMemHandler != NULL){
-				taskList[i].device[0].memHandler = tmpMemHandler;
-				taskList[i].device[0].numcl_memObj=(trayIdx+1);
+				taskList[i].device[0].memHandler[myRack] = tmpMemHandler;
+				taskList[i].numTrays=(trayIdx+1);
 			}
 			else {
-				free(taskList[i].device[0].memHandler);
+				free(taskList[i].device[0].memHandler[myRack]);
 				printf("Error AT:(re)allocating memory %s:%d",__FILE__,__LINE__);
 				exit(1);
 			}
-			//free(tmpMemHandler); TODO: is it now ready to free?
+			//free(tmpMemHandler); //TODO: is it now ready to free?
 		}
 		 if (trayIdx==0 && memIdx==0){ //if this is the first tray to be initialized.
-			taskList[i].entitiesbuffer = malloc(sizeof(XCLbuffer));
-			taskList[i].device[0].memHandler = malloc(1 * sizeof(cl_mem)); //init the first device mem space.
-			taskList[i].device[0].numcl_memObj=1;
+			taskList[i].trayInfo = malloc(sizeof(XCLTrayInfo));
+			taskList[i].device[0].memHandler[myRack] = malloc(1 * sizeof(cl_mem)); //init the first device mem space.
+			taskList[i].numTrays=1;
 		}
 
-		taskList[i].entitiesbuffer->size = DbufferSize[i];//device buffer size for the i-th task.
-		taskList[i].entitiesbuffer->bufferMode = CL_MEM_READ_WRITE;
+		taskList[i].trayInfo->size = tskbufferSize[i];//device buffer size for the i-th task.
+		//taskList[i].entitiesbuffer->bufferMode = CL_MEM_READ_WRITE; //TODO review this issue
 
-		taskList[i].device[0].memHandler[trayIdx] = clCreateBuffer(
+		taskList[i].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
 				taskList[i].device[0].context,
-				taskList[i].entitiesbuffer->bufferMode,
-				taskList[i].entitiesbuffer->size, NULL, &status);
+				CL_MEM_READ_WRITE,
+				taskList[i].trayInfo->size, NULL, &status);
 
 		chkerr(status, "Error at: Creating mem Buffers", __FILE__, __LINE__);
-		debug_print("allocated: %zd \n", taskList[i].entitiesbuffer->size);
-
-		//memObjects[i]=taskList[i].device[0].memHandler[memIdx];
-
-		//taskList[i].device[0].numcl_memObj++; //here we inform to the runtime that this device has increased in one its number of memObjs
+		debug_print("allocated: %zd Bytes in Device Memory\n ", taskList[i].trayInfo->size);
 
 	}
 

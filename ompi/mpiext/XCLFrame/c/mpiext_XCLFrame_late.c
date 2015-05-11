@@ -160,4 +160,27 @@ int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
 	return MPI_SUCCESS;
 }
 
+int OMPI_XclWaitAllTasks(MPI_Comm comm){
+	void *dlhandle;
 
+			int (*XclWaitAllTasks)(MPI_Comm comm);
+			char *error;
+
+			dlhandle = dlopen("libtskMgmt.so", RTLD_LAZY);
+			if (!dlhandle) {
+				fputs(dlerror(), stderr);
+				exit(1);
+			}
+
+			XclWaitAllTasks = dlsym(dlhandle, "XclWaitAllTasks");
+
+			if ((error = dlerror()) != NULL) {
+				fputs(error, stderr);
+				exit(1);
+			}
+			int err;
+			err = (*XclWaitAllTasks)(comm);
+
+			dlclose(dlhandle);
+	 return MPI_SUCCESS;
+}

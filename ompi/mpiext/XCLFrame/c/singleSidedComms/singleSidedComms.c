@@ -33,7 +33,8 @@ int OMPI_XclReadTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize, void * ho
 	return 0;
 }
 
-//TODO should I pass a rank to enable say on which task lives host buffer?
+//TODO: should I pass a rank to enable say on which task lives host buffer?
+//TODO: should I enable pass a rank where host buffer lives?
 int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * hostBuffer, MPI_Comm comm){
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
@@ -69,7 +70,7 @@ int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * ho
 int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_task, int g_dest_task, int TAG, MPI_Comm comm){
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
-	if (myRank == g_taskList[g_src_task].r_rank) {
+	//if (myRank == g_taskList[g_src_task].r_rank) {
 		void* tmpBuffData;
 		int tmpBuffSz = count * MPIentityTypeSize;
 		tmpBuffData = (void*) malloc(tmpBuffSz);
@@ -97,8 +98,16 @@ int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 		(*readBuffer)(l_src_task, trayIdx, tmpBuffSz, tmpBuffData);
 		//Send to the appropriate rank.
 		int dest_rank = g_taskList[g_dest_task].r_rank;
-		MPI_Send(tmpBuffData, count, MPIentityType, dest_rank, TAG, comm);
-	}
+		int ack;
+		MPI_Request request;
+		MPI_Status status;
+		MPI_Isend(tmpBuffData, count, MPIentityType, dest_rank, TAG, comm,&request);
+		 //printf("hello there user, I've just started this send\n\
+		and I'm having a good time relaxing.\n");
+		//MPI_Recv(&ack,1,MPI_INT,dest_rank,88,comm,MPI_STATUS_IGNORE);
+		//MPI_Wait(&request,&status);
+
+	//}
 	//TODO:free tmpBuffData.
 	return 0;
 
@@ -108,15 +117,23 @@ int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 int OMPI_XclRecv(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_task, int g_recv_task, int TAG,MPI_Comm comm) {
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
-	if (myRank == g_taskList[g_recv_task].r_rank) {
+	//if (myRank == g_taskList[g_recv_task].r_rank) {
 		void* tmpBuffData;
 		int tmpBuffSz = count * MPIentityTypeSize; //buffer size in bytes.
 		tmpBuffData = (void*) malloc(tmpBuffSz);
 
 		//recv from the appropriate rank.
 		int src_rank = g_taskList[g_src_task].r_rank;
-		MPI_Recv(tmpBuffData, count, MPIentityType, src_rank, TAG, comm,
-				MPI_STATUS_IGNORE );
+		int ack=1;
+		MPI_Request request;
+		MPI_Status status;
+		MPI_Irecv(tmpBuffData, count, MPIentityType, src_rank, TAG, comm,&request);
+		//MPI_Recv(tmpBuffData, count, MPIentityType, src_rank, TAG, comm,MPI_STATUS_IGNORE);
+		//printf("hello there user, I've just started this receive\n\
+		on, and I'm having a good time relaxing.\n");
+		//MPI_Send(&ack,1,MPI_INT,0,88,comm);
+
+		MPI_Wait(&request,&status);
 
 		void * memRecvHandle = NULL; //function pointer
 		int (*initNewBuffer)(int taskIdx, int trayIdx, int bufferSize);
@@ -141,7 +158,7 @@ int OMPI_XclRecv(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 		int l_recv_task = g_taskList[g_recv_task].l_taskIdx;
 		(*initNewBuffer)(l_recv_task, trayIdx, tmpBuffSz);
 		(*writeBuffer)(l_recv_task, trayIdx, tmpBuffSz, tmpBuffData);
-	}
+	//}
 	return 0;
 }
 

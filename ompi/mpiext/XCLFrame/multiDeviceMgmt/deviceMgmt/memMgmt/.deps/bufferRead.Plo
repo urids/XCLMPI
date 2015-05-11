@@ -49,6 +49,15 @@ deviceMgmt/memMgmt/bufferRead.lo: deviceMgmt/memMgmt/bufferRead.c \
  deviceMgmt/memMgmt/../../taskMgmt/task.h \
  deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/Device.h \
  deviceMgmt/memMgmt/../../taskMgmt/taskProcedures.h \
+ deviceMgmt/memMgmt/../../taskMgmt/task.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+ ../../../../ompi/include/mpi.h \
+ ../../../../ompi/include/mpi_portable_platform.h \
+ deviceMgmt/memMgmt/../../taskMgmt/../errorMgmt/errorHandling.h \
+ deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/localDevices.h \
+ deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/Device.h \
+ deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h \
  deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h
 
 deviceMgmt/memMgmt/bufferFunctions.h:
@@ -176,5 +185,27 @@ deviceMgmt/memMgmt/../../taskMgmt/task.h:
 deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/Device.h:
 
 deviceMgmt/memMgmt/../../taskMgmt/taskProcedures.h:
+
+deviceMgmt/memMgmt/../../taskMgmt/task.h:
+
+/usr/include/pthread.h:
+
+/usr/include/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+../../../../ompi/include/mpi.h:
+
+../../../../ompi/include/mpi_portable_platform.h:
+
+deviceMgmt/memMgmt/../../taskMgmt/../errorMgmt/errorHandling.h:
+
+deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/localDevices.h:
+
+deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/Device.h:
+
+deviceMgmt/memMgmt/../../taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h:
 
 deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h:

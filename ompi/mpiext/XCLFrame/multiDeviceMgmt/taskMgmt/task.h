@@ -20,12 +20,11 @@ typedef struct Xcode_st{
 }XCLcode;
 
 
-typedef struct Xbuffer_st{
+typedef struct XTrayInfo_st{
 	int bufferMode;
 	size_t size;
-	void ** data;
-
-}XCLbuffer;
+	//void ** data;
+}XCLTrayInfo;
 
 
 typedef struct Xkernel_st{
@@ -44,14 +43,18 @@ typedef struct XCLtask_st{
 	//every task MUST have an associated device
 	Device* device;
 
-	//every task MUST have its code
+	//every task MUST have its code //and have their kernel List
 	XCLcode* code;
 	cl_program* CLprogram;
-	//and have their kernel List
-	int numKernels; //must be passed as parameter at task startup TODO: will be useful for multiKernels.
+	int numKernels; // TODO: will be useful for multiKernels.
 	XCLkernel* kernel;
 
-	XCLbuffer *entitiesbuffer; //buffer for the entities assigned to this task.
+	int numTrays; //number of trays for this task
+	XCLTrayInfo *trayInfo; /*info about size and type of tray.
+	 	 	 	 	 	 	 	 the current cl_mem object is managed by its device*/
+
+	int Rack; //number Of Rack in device of this task. two task may have same number of rack
+				 // provided that they belong to different devices =) !!
 
 }XCLtask;
 

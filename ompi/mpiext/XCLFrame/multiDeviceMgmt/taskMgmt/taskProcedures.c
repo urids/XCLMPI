@@ -1,16 +1,7 @@
 #include "taskProcedures.h"
-#include "task.h"
-#include "CL/cl.h"
-#include <stdlib.h>
-#include <stdio.h>
-
-
-#include "../errorMgmt/errorHandling.h"
-#include "../deviceMgmt/localDevices.h"
-#include "../deviceMgmt/memMgmt/bufferFunctions.h"
 
 #define DEBUG 0
-#define PROFILE 1
+#define PROFILE 0
 
 int createProgram(char* srcPath,int numTasks){
 	int status;
@@ -112,34 +103,57 @@ int kernelXplor(int numTasks){
 return status;
 }
 
-int setKernelmemObj(int numTasks,int numparameter,int paramSize,int trayIdx){
+int setKernelmemObj(int seltask,int numparameter,int paramSize,int trayIdx){
 	int status;
-	int i;
 
-	for (i = 0; i < numTasks; i++) {
-	debug_print("\n Debug: setting cl_mem arg: %d in task %d\n", numparameter, i);
+	//for (i = 0; i < numTasks; i++) {
+		int myRack=taskList[seltask].Rack;
+	debug_print("\n Debug: setting cl_mem arg: %d in task %d from rack: [%d] tray:[%d] \n", numparameter, seltask,myRack,trayIdx);
 
-		status = clSetKernelArg(taskList[i].kernel[0].kernel, numparameter,
-				paramSize, &taskList[i].device[0].memHandler[trayIdx]);
+		status = clSetKernelArg(taskList[seltask].kernel[0].kernel, numparameter,
+				sizeof(cl_mem), &taskList[seltask].device[0].memHandler[myRack][trayIdx]);
 	chkerr(status, "error at: Setting entity buffer Arg.", __FILE__, __LINE__);
-	}
+	//}
 	return 0;
 }
 
-int setKernelArgs(int numTasks,int numparameter,int paramSize,void* paramValue){
+int setKernelArgs(int seltask,int numparameter,int paramSize,void* paramValue){
 	int status;
 	int i;
 
-	for (i = 0; i < numTasks; i++) {
-		debug_print("\n Debug: setting arg: %d in task %d ,%d \n", numparameter,
-				i, paramSize);
-		status = clSetKernelArg(taskList[i].kernel[0].kernel, numparameter,
+	//for (i = 0; i < numTasks; i++) {
+		debug_print("\n Debug: setting arg: %d in task %d \n", numparameter, seltask);
+		status = clSetKernelArg(taskList[seltask].kernel[0].kernel, numparameter,
 				paramSize, (void *) paramValue);
 		chkerr(status, "error at: Setting other kernel Args", __FILE__,	__LINE__);
-	}
+	//}
 
 	debug_print("set Args %d successful..\n",numparameter);
 	return status;
+}
+
+
+typedef struct enqueueArgs_st{
+	size_t globalThreads;
+	size_t localThreads;
+	cl_command_queue th_queue;
+	cl_kernel th_kernel;
+	//cl_event kernelProfileEvent;
+
+}enqueueArgs_t;
+enqueueArgs_t **th_Args;
+pthread_t*  thds;
+
+void * enqueTaskReq(void *args) {
+	int status;
+	enqueueArgs_t* l_args = (enqueueArgs_t*) args;
+	status = clEnqueueNDRangeKernel(l_args->th_queue, l_args->th_kernel, 1, NULL,
+			&l_args->globalThreads, &l_args->localThreads, 0, NULL,
+			NULL);
+	//chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
+	//debug_print("Enqueuing Kernel successful..\n");
+
+	//pthread_exit(NULL);
 }
 
 
@@ -172,28 +186,93 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 }else{
 
-	cl_event kernelProfileEvent;
-		cl_ulong time_start, time_end;
-		double total_time;
+	int myRank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
 
+
+	cl_event kernelProfileEvent;
+#if PROFILE
+	cl_ulong time_start, time_end;
+	double total_time;
+
+		time_t rawtime;
+		struct tm * timeinfo;
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+		printf("scheduled HOUR of task: %d -->  %s \n", selTask,
+				asctime(timeinfo));
+#endif //if PROFILE
+
+		/*
+		 * This must be done with pthreads because clEnqueueNDRangeKernel is synchronous for
+		 * some openCL implementations aka NVIDIA ='(...
+		 *
+		 * */
+
+		if(thds==NULL)
+			thds=(pthread_t*)malloc(numTasks*sizeof(pthread_t));
+
+		if(th_Args==NULL)
+			th_Args=(enqueueArgs_t **)malloc(numTasks*sizeof(enqueueArgs_t*));
+
+		/*pthread_attr_t attr;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);*/
+
+		int ret;
+		static int numReq=0;
+
+		time_t rawtime;
+				struct tm * timeinfo;
+				time(&rawtime);
+				timeinfo = localtime(&rawtime);
+
+
+
+		th_Args[selTask]=(enqueueArgs_t*)malloc(sizeof(enqueueArgs_t));
+		th_Args[selTask]->globalThreads=globalThreads;
+		th_Args[selTask]->localThreads=localThreads;
+		//th_Args[selTask]->kernelProfileEvent=kernelProfileEvent;
+		th_Args[selTask]->th_queue=taskList[selTask].device[0].queue;
+		th_Args[selTask]->th_kernel=taskList[selTask].kernel[0].kernel;
+
+		//printf("task: %d Requesting at time: %s \n",numReq++,asctime(timeinfo));
+	  	pthread_create(&thds[selTask], NULL, enqueTaskReq, (void*) th_Args[selTask]);
+        printf("task: %d Requested at time: %s \n",(numReq++)%4,asctime(timeinfo));
+		//pthread_attr_destroy(&attr);
+
+/*
 		status = clEnqueueNDRangeKernel(taskList[selTask].device[0].queue, taskList[selTask].kernel[0].kernel, 1, NULL,
 				&globalThreads, &localThreads, 0, NULL, &kernelProfileEvent);
 		chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
+		  debug_print("Enqueuing Kernel requested..\n");*/
 
-		debug_print("Enqueuing Kernel successful..\n");
-
-		#if PROFILE
+#if PROFILE
 		clWaitForEvents(1 , &kernelProfileEvent);
 		clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
 		clGetEventProfilingInfo(kernelProfileEvent, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
 		total_time = time_end - time_start;
-		profile_print("Execution time of task: %d -->  %0.3f ms\n",selTask,(total_time / 1000000.0));
-		#endif //if PROFILE
-
+		profile_print("Execution time of task: %d in rank %d -->  %0.3f ms \n",selTask, myRank,(total_time / 1000000.0));
+#endif //if PROFILE
 
 }
 	return status;
 }
 
+
+int XclWaitAllTasks(int numTasks,MPI_Comm comm){
+	int i;
+
+	for(i=0;i<numTasks;i++){
+				pthread_join(thds[i], NULL);
+	}
+/*	for(i=0;i<numTasks;i++){
+		pthread_detach(thds[i]);
+	}*/
+
+	printf("--------------- %d tasks -------------------\n",numTasks);
+	return 0;
+
+}
 
 

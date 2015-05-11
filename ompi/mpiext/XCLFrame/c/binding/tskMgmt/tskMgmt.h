@@ -8,7 +8,7 @@
 #ifndef TKMGMT_H_
 #define TKMGMT_H_
 
-#define DEBUG 0
+
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@
 #include "../../../multiDeviceMgmt/deviceMgmt/localDevices.h"
 #include "../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h"
 #include "../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h"
+#include "deviceMap.h"
 
 //#include "../../singleSidedComms/XclScatter.h"
 

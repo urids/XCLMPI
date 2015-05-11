@@ -47,10 +47,13 @@ typedef struct Device_st {
 	// Context properties
 	cl_context_properties cprops[3];
 
-	cl_mem * memHandler; //handler for the memory object (both cpu or gpu mem)
-	int numcl_memObj;
+	int numRacks;
+	//Double pointer means racks of trays when a device handles multiple tasks =)!!
+	cl_mem ** memHandler; //handler for the memory object (both cpu or gpu mem)
 	cl_ulong maxAllocMemSize;
 	cl_ulong globalMemSize;
+
+
 
 } Device;
 

@@ -142,6 +142,21 @@ mpiext_XCLFrame_early.lo: mpiext_XCLFrame_early.c \
  ../multiDeviceMgmt/taskMgmt/task.h \
  ../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h \
  ../multiDeviceMgmt/taskMgmt/taskProcedures.h \
+ ../multiDeviceMgmt/taskMgmt/task.h ../../../../ompi/include/mpi.h \
+ ../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h \
+ /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/huge_val.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
+ /usr/include/x86_64-linux-gnu/bits/inf.h \
+ /usr/include/x86_64-linux-gnu/bits/nan.h \
+ /usr/include/x86_64-linux-gnu/bits/mathdef.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathinline.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h \
  ../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
  ../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
@@ -501,6 +516,40 @@ mpiext_XCLFrame_c.h:
 ../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h:
 
 ../multiDeviceMgmt/taskMgmt/taskProcedures.h:
+
+../multiDeviceMgmt/taskMgmt/task.h:
+
+../../../../ompi/include/mpi.h:
+
+../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_val.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_valf.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_vall.h:
+
+/usr/include/x86_64-linux-gnu/bits/inf.h:
+
+/usr/include/x86_64-linux-gnu/bits/nan.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathdef.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathinline.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h:
 
 ../multiDeviceMgmt/deviceMgmt/deviceExploration.h:
 

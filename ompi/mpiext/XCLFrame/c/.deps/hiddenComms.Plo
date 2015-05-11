@@ -47,7 +47,28 @@ hiddenComms.lo: hiddenComms.c hiddenComms.h /usr/include/stdlib.h \
  mpiext_XCLFrame_c.h ../multiDeviceMgmt/deviceMgmt/localDevices.h \
  ../multiDeviceMgmt/taskMgmt/task.h \
  ../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h \
- ../multiDeviceMgmt/taskMgmt/taskProcedures.h
+ ../multiDeviceMgmt/taskMgmt/taskProcedures.h \
+ ../multiDeviceMgmt/taskMgmt/task.h /usr/include/xlocale.h \
+ /usr/include/pthread.h /usr/include/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+ ../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h \
+ /usr/include/string.h /usr/include/x86_64-linux-gnu/bits/string.h \
+ /usr/include/x86_64-linux-gnu/bits/string2.h \
+ /usr/include/x86_64-linux-gnu/bits/string3.h /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_val.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
+ /usr/include/x86_64-linux-gnu/bits/inf.h \
+ /usr/include/x86_64-linux-gnu/bits/nan.h \
+ /usr/include/x86_64-linux-gnu/bits/mathdef.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathinline.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h \
+ ../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h
 
 hiddenComms.h:
 
@@ -170,3 +191,53 @@ mpiext_XCLFrame_c.h:
 ../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h:
 
 ../multiDeviceMgmt/taskMgmt/taskProcedures.h:
+
+../multiDeviceMgmt/taskMgmt/task.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/pthread.h:
+
+/usr/include/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h:
+
+/usr/include/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string2.h:
+
+/usr/include/x86_64-linux-gnu/bits/string3.h:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_val.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_valf.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_vall.h:
+
+/usr/include/x86_64-linux-gnu/bits/inf.h:
+
+/usr/include/x86_64-linux-gnu/bits/nan.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathdef.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathinline.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h:
+
+../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h:

@@ -53,7 +53,7 @@
 		switch(*++p) {
 		case 'c':
 			i = va_arg (arg, int);
-			(*setKernelArgs)(numTasks,numParam,sizeof(int),&i);
+			(*setKernelArgs)(selTask,numParam,sizeof(int),&i);
 			numParam++;
 			numConsts++;
 			debug_print("\n Debug: argument type: int, arg number: %d, value: %d \n",numParam,i);
@@ -61,7 +61,7 @@
 
 		case 'd':
 			i = va_arg(arg, int);
-			(*setKernelArgs)(numTasks,numParam,sizeof(int),&i);
+			(*setKernelArgs)(selTask,numParam,sizeof(int),&i);
 			numParam++;
 			numConsts++;
 			debug_print("\n Debug: argument type: int, arg number: %d, value: %d \n",numParam,i);
@@ -69,7 +69,7 @@
 		case 'f':
 			dd = va_arg(arg, double);
 			f=(float)dd;
-			(*setKernelArgs)(numTasks,numParam,sizeof(float),&f);
+			(*setKernelArgs)(selTask,numParam,sizeof(float),&f);
 			numParam++;
 			numConsts++;
 			debug_print("\n Debug: argument type: float, arg number: %d, value: %lf \n",numParam,f);
@@ -77,23 +77,14 @@
 
 		case 's':
 			s = va_arg(arg, char *);
-			(*setKernelArgs)(numTasks, numParam, sizeof(char*), s);
+			(*setKernelArgs)(selTask, numParam, sizeof(char*), s);
 			numParam++;
 			numConsts++;
 			debug_print("\n Debug: argument type: string, arg number: %d, value: %s \n",numParam, s);
 			break;
-		/*case 'M':
-			*memObj = va_arg (arg, cl_mem);
-			(*setKernelArgs)(numTasks, numParam, sizeof(cl_mem), (void*)memObj);
-			numParam++;
-			numConsts++;
-			debug_print(
-					"\n Debug: argument type: cl_mem, arg number: %d, value: abstract  \n",
-					numParam);
-			break;*/
 		case 'T':
 			tray = va_arg(arg, int);
-			(*setKernelmemObj)(numTasks, numParam, sizeof(cl_mem), tray);
+			(*setKernelmemObj)(selTask, numParam, sizeof(cl_mem), tray);
 			numParam++;
 			numConsts++;
 			debug_print("\n Debug: argument type: cl_mem, arg number: %d, value: abstract  \n",numParam);
@@ -110,3 +101,29 @@
   return 0;
 
 }
+
+
+int XclWaitAllTasks(MPI_Comm comm){
+ 	void *dlhandle;
+
+ 			int (*XclWaitAllTasks)(int numTasks,MPI_Comm comm);
+ 			char *error;
+
+ 			dlhandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
+ 			if (!dlhandle) {
+ 				fputs(dlerror(), stderr);
+ 				exit(1);
+ 			}
+
+ 			XclWaitAllTasks = dlsym(dlhandle, "XclWaitAllTasks");
+
+ 			if ((error = dlerror()) != NULL) {
+ 				fputs(error, stderr);
+ 				exit(1);
+ 			}
+ 			int err;
+ 			err = (*XclWaitAllTasks)(numTasks,comm);
+
+ 			dlclose(dlhandle);
+ 	 return MPI_SUCCESS;
+ }

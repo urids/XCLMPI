@@ -56,8 +56,8 @@ int OMPI_XclScatter(const char* datafileName, int* count, MPI_Datatype MPIentity
     	//read the libdvMgmt symbol
     	void * meminitHandle=NULL;
     	//void (*initEntitiesBuffer)(int,int,int, cl_mem*);
-    	void (*initEntitiesBuffer)(int, int trayIdx, int, int);
-    	void (*writeEntitiesBuffer)(int,int,void*);
+    	void (*initEntitiesBuffer)(int numTasks, int trayIdx, int HBufferSize, int MPIEntityTypeSz);
+    	void (*writeEntitiesBuffer)(int ,int , void* bufferData);
     	char *error;
 
     	meminitHandle=dlopen("libdvMgmt.so",RTLD_NOW);
@@ -77,10 +77,10 @@ int OMPI_XclScatter(const char* datafileName, int* count, MPI_Datatype MPIentity
     	(*initEntitiesBuffer)(numTasks, trayIdx, HBufferSize, MPIentityTypeSize);
     	(*writeEntitiesBuffer)(numTasks, trayIdx , hostbuffer);
 
-    	MPI_File_close(&dataFile);
+    	//MPI_File_close(&dataFile); //TODO: it is ready to be closed??
     return 0;
-    }
 
+    }
 }
 
 

@@ -19,6 +19,6 @@
 
 extern int numEntitiesInHost;
 extern float entitiesPerTask;
-extern int* DbufferSize; //Device BufferSize
+extern int* tskbufferSize; //Device BufferSize
 
 #endif /* BUFFERFUNCTIONS_H_ */
