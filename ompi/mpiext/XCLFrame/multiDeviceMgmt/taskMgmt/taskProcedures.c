@@ -269,6 +269,9 @@ int XclWaitAllTasks(int numTasks,MPI_Comm comm){
 /*	for(i=0;i<numTasks;i++){
 		pthread_detach(thds[i]);
 	}*/
+	MPI_Barrier(MPI_COMM_WORLD);
+
+
 	return 0;
 }
 
