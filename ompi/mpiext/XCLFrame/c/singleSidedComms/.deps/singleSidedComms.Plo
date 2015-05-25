@@ -30,8 +30,12 @@ singleSidedComms/singleSidedComms.lo: singleSidedComms/singleSidedComms.c \
  /usr/include/x86_64-linux-gnu/bits/dlfcn.h \
  ../../../../ompi/include/mpi.h \
  ../../../../ompi/include/mpi_portable_platform.h \
- binding/tskMgmt/tskMgmt.h /usr/include/string.h /usr/include/xlocale.h \
- /usr/include/x86_64-linux-gnu/bits/string.h \
+ binding/tskMgmt/tskMgmt.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h /usr/include/string.h \
+ /usr/include/xlocale.h /usr/include/x86_64-linux-gnu/bits/string.h \
  /usr/include/x86_64-linux-gnu/bits/string2.h \
  /usr/include/x86_64-linux-gnu/bits/string3.h \
  /usr/local/cuda-5.5/include/CL/cl.h \
@@ -156,6 +160,18 @@ singleSidedComms/singleSidedComms.h:
 ../../../../ompi/include/mpi_portable_platform.h:
 
 binding/tskMgmt/tskMgmt.h:
+
+/usr/include/unistd.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/getopt.h:
+
+/usr/include/x86_64-linux-gnu/bits/unistd.h:
 
 /usr/include/string.h:
 

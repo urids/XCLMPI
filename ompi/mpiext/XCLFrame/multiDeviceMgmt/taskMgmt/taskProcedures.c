@@ -134,10 +134,11 @@ int setKernelArgs(int seltask,int numparameter,int paramSize,void* paramValue){
 
 
 typedef struct enqueueArgs_st{
-	size_t globalThreads;
-	size_t localThreads;
+	size_t* globalThreads;
+	size_t* localThreads;
 	cl_command_queue th_queue;
 	cl_kernel th_kernel;
+	int workDim;
 	//cl_event kernelProfileEvent;
 
 }enqueueArgs_t;
@@ -147,8 +148,8 @@ pthread_t*  thds;
 void * enqueTaskReq(void *args) {
 	int status;
 	enqueueArgs_t* l_args = (enqueueArgs_t*) args;
-	status = clEnqueueNDRangeKernel(l_args->th_queue, l_args->th_kernel, 1, NULL,
-			&l_args->globalThreads, &l_args->localThreads, 0, NULL,
+	status = clEnqueueNDRangeKernel(l_args->th_queue, l_args->th_kernel, l_args->workDim, NULL,
+			l_args->globalThreads, l_args->localThreads, 0, NULL,
 			NULL);
 	//chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
 	//debug_print("Enqueuing Kernel successful..\n");
@@ -156,8 +157,8 @@ void * enqueTaskReq(void *args) {
 	//pthread_exit(NULL);
 }
 
-
-int enqueueKernel(int numTasks,int selTask, const size_t globalThreads, const size_t localThreads) {
+//int enqueueKernel(int numTasks,int selTask, int workDim, const size_t globalThreads, const size_t localThreads) {
+int enqueueKernel(int numTasks,int selTask, int workDim, const size_t* globalThreads, const size_t* localThreads) {
 	int status;
 	int i;
 
@@ -223,15 +224,16 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 		static int numReq=0;
 
 		time_t rawtime;
-				struct tm * timeinfo;
-				time(&rawtime);
-				timeinfo = localtime(&rawtime);
+		struct tm * timeinfo;
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
 
 
 
 		th_Args[selTask]=(enqueueArgs_t*)malloc(sizeof(enqueueArgs_t));
 		th_Args[selTask]->globalThreads=globalThreads;
 		th_Args[selTask]->localThreads=localThreads;
+		th_Args[selTask]->workDim=workDim;
 		//th_Args[selTask]->kernelProfileEvent=kernelProfileEvent;
 		th_Args[selTask]->th_queue=taskList[selTask].device[0].queue;
 		th_Args[selTask]->th_kernel=taskList[selTask].kernel[0].kernel;

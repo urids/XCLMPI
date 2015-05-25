@@ -15,7 +15,7 @@
 
 XCLtask* taskList; // Global Variable declared in task.h
 taskInfo* g_taskList; //Global Variable declared at taskMap.h
-int numTasks;//Global variable declared in tskMgmt.h
+int l_numTasks;//Global variable declared in tskMgmt.h
 int numRanks, myRank, HostNamelen;
 
 int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
@@ -63,7 +63,7 @@ int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
 
 
 	int* RKS =(int*)malloc(numRanks*sizeof(int));
-	MPI_Allgather(&numTasks,1,MPI_INT,RKS,1,MPI_INT,comm);
+	MPI_Allgather(&l_numTasks,1,MPI_INT,RKS,1,MPI_INT,comm);
 
 	int g_numTasks;
 	for(g_numTasks=0,i=0;i<numRanks;i++){
@@ -94,7 +94,7 @@ int OMPI_XclCreateKernel(MPI_Comm comm,char* srcPath, char* kernelName){
 int i;
 
 	void *dlhandle;
-	int (*XclCreateKernel)(MPI_Comm comm,char* srcPath,char* kernelName,int numTasks);
+	int (*XclCreateKernel)(MPI_Comm comm,char* srcPath,char* kernelName,int l_numTasks);
 	char *error;
 
 	dlhandle =dlopen("libtskMgmt.so",RTLD_LAZY);
@@ -114,7 +114,7 @@ int i;
 	//take care here because clXplr will become the global and unique xploreInfo "object" maybe I should make it const
 
 	//TODO: this is only if devSelection=ALL_DEVICES; otherwise maybe we need a switch.
-	err=(*XclCreateKernel)(comm,srcPath,kernelName,numTasks);
+	err=(*XclCreateKernel)(comm,srcPath,kernelName,l_numTasks);
 	//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,gpu,&taskSet);
 	//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,accel,&taskSet);
 	dlclose(dlhandle);
@@ -122,8 +122,12 @@ int i;
 	return MPI_SUCCESS;
 }
 
-int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
-		int localThreads, const char * fmt, ...) {
+//int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
+	//int localThreads, const char * fmt, ...) {
+
+int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask,int workDim, size_t * globalThreads,
+		size_t * localThreads, const char * fmt, ...) {
+
 	//Select the appropriate local task if any.
 	if (myRank == g_taskList[g_selTask].r_rank) {
 
@@ -131,7 +135,7 @@ int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
 
 		void *dlhandle;
 
-		int (*XclExecKernel)(MPI_Comm, int selTask, int, int, const char *,
+		int (*XclExecKernel)(MPI_Comm, int selTask, int workDim, size_t*, size_t*, const char *,
 				va_list);
 		char *error;
 
@@ -151,7 +155,7 @@ int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
 
 		va_list argptr;
 		va_start(argptr, fmt);
-		err = (*XclExecKernel)(communicator, l_selTask, globalThreads,
+		err = (*XclExecKernel)(communicator, l_selTask, workDim ,globalThreads,
 				localThreads, fmt, argptr);
 		va_end(argptr);
 

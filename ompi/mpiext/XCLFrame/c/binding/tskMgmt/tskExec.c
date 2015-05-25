@@ -7,7 +7,8 @@
 
 //#define OMPI_XclExecKernel(dataFilePath , fmt, ...) _OMPI_XclExecKernel(dataFilePath , fmt,  ##__VA_ARGS__)
 
- int XclExecKernel(MPI_Comm comm, int selTask, int globalThreads, int localThreads, const char * fmt, va_list arg) {
+// int XclExecKernel(MPI_Comm comm, int selTask, int globalThreads, int localThreads, const char * fmt, va_list arg) {
+ int XclExecKernel(MPI_Comm comm, int selTask,int workDim , size_t * globalThreads, size_t* localThreads, const char * fmt, va_list arg) {
 	int numParam = 0;
 	const char *p;
 	int j, k; //index exclusive
@@ -23,7 +24,7 @@
 	void *dlhandle;
 	int (*setKernelArgs)(int, int, int, void*);
 	int (*setKernelmemObj)(int,int,int,int);
-	int (*enqueueKernel)(int numTasks,int selTask, const size_t globalThreads, const size_t localThreads);
+	int (*enqueueKernel)(int l_numTasks,int selTask,int workDim ,const size_t* globalThreads, const size_t* localThreads);
 	char *error;
 
 	///home/uriel/Dev/mpiApps/FTWrkDistr/multiDeviceMgmt/Debug/
@@ -96,7 +97,7 @@
 		}
 	}
 
-	(*enqueueKernel)(numTasks,selTask, globalThreads, localThreads);
+	(*enqueueKernel)(l_numTasks,selTask,workDim, globalThreads, localThreads);
 
   return 0;
 
@@ -106,7 +107,7 @@
 int XclWaitAllTasks(MPI_Comm comm){
  	void *dlhandle;
 
- 			int (*XclWaitAllTasks)(int numTasks,MPI_Comm comm);
+ 			int (*XclWaitAllTasks)(int l_numTasks,MPI_Comm comm);
  			char *error;
 
  			dlhandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
@@ -122,7 +123,7 @@ int XclWaitAllTasks(MPI_Comm comm){
  				exit(1);
  			}
  			int err;
- 			err = (*XclWaitAllTasks)(numTasks,comm);
+ 			err = (*XclWaitAllTasks)(l_numTasks,comm);
 
  			dlclose(dlhandle);
  	 return MPI_SUCCESS;

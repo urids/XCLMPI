@@ -354,7 +354,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(tskMgmtdir)"
 LTLIBRARIES = $(tskMgmt_LTLIBRARIES)
 libtskMgmt_la_LIBADD =
-am_libtskMgmt_la_OBJECTS = tskMgmt.lo tskExec.lo
+am_libtskMgmt_la_OBJECTS = tskMgmt.lo tskExec.lo taskScheduling.lo
 libtskMgmt_la_OBJECTS = $(am_libtskMgmt_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -1488,7 +1488,8 @@ tskMgmt_LTLIBRARIES = libtskMgmt.la
 
 # Sources for libmultiDeviceMgmt
 libtskMgmt_la_SOURCES = tskMgmt.c \
-					   tskExec.c 
+					   tskExec.c \
+					   taskScheduling.c
 
 libtskMgmt_la_LDFLAGS = -ldl -lOpenCL -Wl,-rpath,$(libdir)/XCLFrame/multiDeviceMgmt	
 all: all-am
@@ -1568,6 +1569,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taskScheduling.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tskExec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tskMgmt.Plo@am__quote@
 

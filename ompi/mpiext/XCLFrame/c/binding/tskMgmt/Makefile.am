@@ -13,6 +13,7 @@ tskMgmt_LTLIBRARIES = libtskMgmt.la
 
 # Sources for libmultiDeviceMgmt
 libtskMgmt_la_SOURCES =tskMgmt.c \
-					   tskExec.c 
+					   tskExec.c \
+					   taskScheduling.c
 					  
 libtskMgmt_la_LDFLAGS = -ldl -lOpenCL -Wl,-rpath,$(libdir)/XCLFrame/multiDeviceMgmt	

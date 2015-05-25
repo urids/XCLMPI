@@ -56,7 +56,7 @@ int OMPI_XclScatter(const char* datafileName, int* count, MPI_Datatype MPIentity
     	//read the libdvMgmt symbol
     	void * meminitHandle=NULL;
     	//void (*initEntitiesBuffer)(int,int,int, cl_mem*);
-    	void (*initEntitiesBuffer)(int numTasks, int trayIdx, int HBufferSize, int MPIEntityTypeSz);
+    	void (*initEntitiesBuffer)(int l_numTasks, int trayIdx, int HBufferSize, int MPIEntityTypeSz);
     	void (*writeEntitiesBuffer)(int ,int , void* bufferData);
     	char *error;
 
@@ -74,8 +74,8 @@ int OMPI_XclScatter(const char* datafileName, int* count, MPI_Datatype MPIentity
     		exit(1);
     	}
 
-    	(*initEntitiesBuffer)(numTasks, trayIdx, HBufferSize, MPIentityTypeSize);
-    	(*writeEntitiesBuffer)(numTasks, trayIdx , hostbuffer);
+    	(*initEntitiesBuffer)(l_numTasks, trayIdx, HBufferSize, MPIentityTypeSize);
+    	(*writeEntitiesBuffer)(l_numTasks, trayIdx , hostbuffer);
 
     	//MPI_File_close(&dataFile); //TODO: it is ready to be closed??
     return 0;
@@ -94,7 +94,7 @@ int OMPI_XclGather(int trayIdx, int count, MPI_Datatype MPIentityType,void **hos
 	MPI_Comm_size(comm, &commsize);
 
 	void *tmphostbuffer;
-	tmphostbuffer=(void*)malloc(count * MPIentityTypeSize*numTasks);//space enough for all tasks in this process
+	tmphostbuffer=(void*)malloc(count * MPIentityTypeSize*l_numTasks);//space enough for all tasks in this process
 	MPI_File dataFile;
 	MPI_Offset filesize;
 
@@ -118,7 +118,7 @@ int OMPI_XclGather(int trayIdx, int count, MPI_Datatype MPIentityType,void **hos
 		exit(1);
 	}
 
-	(*readEntitiesBuffer)(numTasks, trayIdx, tmphostbuffer);
+	(*readEntitiesBuffer)(l_numTasks, trayIdx, tmphostbuffer);
 
 	MPI_File_open(comm, datafileName, MPI_MODE_RDWR | MPI_MODE_CREATE,
 			MPI_INFO_NULL, &dataFile);

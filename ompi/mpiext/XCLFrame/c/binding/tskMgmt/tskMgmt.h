@@ -9,7 +9,7 @@
 #define TKMGMT_H_
 
 
-
+#include <unistd.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,6 +31,6 @@
 
 //#include "../../singleSidedComms/XclScatter.h"
 
-extern int numTasks;  //This will be defined in late.c and is property of the runtime system.
+extern int l_numTasks;  //This will be defined in late.c and is property of the runtime system.
 
 #endif /* TKMGMT_H_ */

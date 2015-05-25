@@ -3,11 +3,19 @@
 #define DEBUG 0
 //This file performs Task<->Device matching
 device_Task_Info* taskDevMap;
-int createTaskList(int devSelection){ //There exist only one taskList per Node and each task has a device.
-int i,j;
 
+int createTaskList(int devSelection){ //There exist only one taskList per Node and each task has a device.
+
+int i,j;
 taskDevMap=malloc(clXplr.numDevices*sizeof(device_Task_Info));
 
+for (i = 0; i < clXplr.numDevices; i++) {
+			taskDevMap[i].min_tskIdx=-1; //By default each device has none assigned task.
+}
+
+readTaskBinding(taskDevMap);
+
+/*
 int matched=0;
 
 	for (i = 0; i < clXplr.numCPUS; i++) { //TODO:CPUS are set first because their enqueue calls are non blocking
@@ -15,7 +23,7 @@ int matched=0;
 		taskDevMap[matched].mappedDevice = cpu[i];
 		//devtaskMap[matched].l_deviceIdx = matched;
 		taskDevMap[matched].min_tskIdx = 0;
-		taskDevMap[matched].max_tskIdx = 1;
+		taskDevMap[matched].max_tskIdx = 0;
 		matched++;
 	}
 
@@ -23,39 +31,36 @@ int matched=0;
 
 		taskDevMap[matched].mappedDevice = gpu[i];
 		//devtaskMap[matched].l_deviceIdx = matched;
-		taskDevMap[matched].min_tskIdx = 2;
-		taskDevMap[matched].max_tskIdx = 7;
+		taskDevMap[matched].min_tskIdx = 1;
+		taskDevMap[matched].max_tskIdx = 3;
 		matched++;
 	}
 
-	/*for (i = 0; i < clXplr.numACCEL; i++) {
+	for (i = 0; i < clXplr.numACCEL; i++) {
 
 		taskDevMap[matched].mappedDevice = accel[i];
 		//devtaskMap[matched].l_deviceIdx = matched;
 		taskDevMap[matched].min_tskIdx = 5;
 		taskDevMap[matched].max_tskIdx = 5;
 		matched++;
-	}*/
+	}
 
-
-//taskList[assigned].device = accel[i];
-//taskList[assigned].numTrays = 0;
-
-	//cpu[0]->memHandler= (cl_mem**)malloc(4 * sizeof(cl_mem*));
+*/
 	switch (devSelection) {
 	case ALL_DEVICES:
 
-		numTasks = 8;
-
-		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
-		int assigned = 0;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_numTasks);
+		//int assigned = 0;
 
 		//Each task needs a handler (pointer) to its device
-		for (i = 0; i < numTasks; i++) {
+		for (i = 0; i < l_numTasks; i++) {
 			taskList[i].device = (Device*) malloc(1*sizeof(Device)); //each task has only 1 device.
 		}
 
+
+
 		for (i = 0; i < clXplr.numDevices; i++) {
+			if(taskDevMap[i].min_tskIdx!=(-1))//perform resource allocation iff has any assignation.
 			for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
 				debug_print("-----matching task %d ------\n",j);
 
@@ -87,13 +92,13 @@ int matched=0;
 
 
 
-	case CPU_DEVICES: //TODO: missing multithread.
-		numTasks = 2;
+	case CPU_DEVICES:
+		//l_numTasks = 4;
 		printf("CPU EXEC\n");
-		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_numTasks);
 
 
-		for (i = 0; i < numTasks; i++) {
+		for (i = 0; i < l_numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = cpu[0];//TODO: switch device number.
 			taskList[i].numTrays = 0; //init the number of device memBuffers to zero
@@ -123,11 +128,11 @@ int matched=0;
 		break;
 
 	case GPU_DEVICES:
-		numTasks = 1;
+		//l_numTasks = 4;
 		printf("GPU EXEC\n");
-		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_numTasks);
 
-		for (i = 0; i < numTasks; i++) {
+		for (i = 0; i < l_numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = gpu[0]; //TODO: switch device number.
 			taskList[i].numTrays = 0; //init the number of device memBuffers to zero
@@ -157,10 +162,10 @@ int matched=0;
 		break;
 
 	case ACC_DEVICES:
-		numTasks = clXplr.numACCEL;
-		taskList = (XCLtask*) malloc(sizeof(XCLtask) * numTasks);
+		//l_numTasks = clXplr.numACCEL;
+		taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_numTasks);
 
-		for (i = 0; i < numTasks; i++) {
+		for (i = 0; i < l_numTasks; i++) {
 			taskList[i].device = (Device*) malloc(sizeof(Device));
 			taskList[i].device = accel[i];
 			taskList[i].numTrays=0;//init the number of device memBuffers to zero
