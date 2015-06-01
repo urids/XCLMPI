@@ -20,8 +20,27 @@ int initNewBuffer(int taskIdx, int trayIdx, int bufferSize ){
 	int myRack=taskList[taskIdx].Rack;
 	//printf("initializing ::: task: %d rack: %d tray: %d :::\n",taskIdx,myRack,trayIdx);
 
+	//if (trayIdx==0 && memIdx==0 ){ //if this is the first tray to be initialized.
+	//printf("task %d has --> %d \n",taskIdx,memIdx);
+	if (memIdx==0){
+			taskList[taskIdx].trayInfo = malloc(sizeof(XCLTrayInfo));
+			taskList[taskIdx].device[0].memHandler[myRack] = malloc(trayIdx+1 * sizeof(cl_mem)); //init the first device mem space.
+			taskList[taskIdx].numTrays=trayIdx+1;
 
-	if ( (trayIdx+1) > memIdx ) { //strictly great to avoid reallocations
+			int j=0;
+			for(j=0;j<trayIdx+1;j++){
+			taskList[taskIdx].device[0].memHandler[myRack][j] = clCreateBuffer(
+						taskList[taskIdx].device[0].context,
+						CL_MEM_READ_WRITE,
+						bufferSize,
+						NULL,
+						&status);
+			chkerr(status, "Error at: Creating new Mem Buffer, %s: %d", __FILE__, __LINE__);
+			}
+
+		}
+
+	else if ( (trayIdx+1) > memIdx ) { //strictly great to avoid reallocations
 		cl_mem * tmpMemHandler;
 		tmpMemHandler = realloc(taskList[taskIdx].device[0].memHandler[myRack],
 				(trayIdx + 1) * sizeof(cl_mem)); //(tray + 1) to avoid dereferencing issues.
@@ -36,24 +55,32 @@ int initNewBuffer(int taskIdx, int trayIdx, int bufferSize ){
 			exit(1);
 		}
 		//free(tmpMemHandler); TODO: is it now ready to free?
-	} if (trayIdx==0 && memIdx==0){ //if this is the first tray to be initialized.
-		taskList[taskIdx].trayInfo = malloc(sizeof(XCLTrayInfo));
-		taskList[taskIdx].device[0].memHandler[myRack] = malloc(1 * sizeof(cl_mem)); //init the first device mem space.
-		taskList[taskIdx].numTrays=1;
+
+		taskList[taskIdx].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
+								taskList[taskIdx].device[0].context,
+								CL_MEM_READ_WRITE,
+								bufferSize,
+								NULL,
+								&status);
+		chkerr(status, "Error at: Creating new Mem Buffer, %s: %d", __FILE__, __LINE__);
+
 	}
 
 	//TODO: missing trayInfo space allocation
     //taskList[taskIdx].trayInfo->size = bufferSize;
 	//taskList[taskIdx].trayInfo->bufferMode = CL_MEM_READ_WRITE;
 
-	taskList[taskIdx].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
+/*	taskList[taskIdx].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
 			taskList[taskIdx].device[0].context,
 			CL_MEM_READ_WRITE,
 			bufferSize,
 			NULL,
 			&status);
 
-	chkerr(status, "Error at: Creating new Mem Buffer, %s: %d", __FILE__, __LINE__);
+			chkerr(status, "Error at: Creating new Mem Buffer, %s: %d", __FILE__, __LINE__);
+*/
+
+
 
 return status;
 

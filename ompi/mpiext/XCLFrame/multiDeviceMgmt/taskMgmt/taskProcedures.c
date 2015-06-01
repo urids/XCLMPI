@@ -240,7 +240,7 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 		//printf("task: %d Requesting at time: %s \n",numReq++,asctime(timeinfo));
 	  	pthread_create(&thds[selTask], NULL, enqueTaskReq, (void*) th_Args[selTask]);
-        printf("task: %d Requested at time: %s \n",(numReq++)%4,asctime(timeinfo));
+        //printf("task: %d rank  Requested at time: %s \n",(numReq++),asctime(timeinfo));
 		//pthread_attr_destroy(&attr);
 
 /*
