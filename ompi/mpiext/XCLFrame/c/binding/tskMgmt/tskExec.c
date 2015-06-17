@@ -124,7 +124,7 @@ int XclWaitAllTasks(MPI_Comm comm){
  			}
  			int err;
  			err = (*XclWaitAllTasks)(l_numTasks,comm);
-
  			dlclose(dlhandle);
+
  	 return MPI_SUCCESS;
  }

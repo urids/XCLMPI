@@ -15,37 +15,6 @@ for (i = 0; i < clXplr.numDevices; i++) {
 
 readTaskBinding(taskDevMap);
 
-/*
-int matched=0;
-
-	for (i = 0; i < clXplr.numCPUS; i++) { //TODO:CPUS are set first because their enqueue calls are non blocking
-
-		taskDevMap[matched].mappedDevice = cpu[i];
-		//devtaskMap[matched].l_deviceIdx = matched;
-		taskDevMap[matched].min_tskIdx = 0;
-		taskDevMap[matched].max_tskIdx = 0;
-		matched++;
-	}
-
-	for (i = 0; i < clXplr.numGPUS; i++) {
-
-		taskDevMap[matched].mappedDevice = gpu[i];
-		//devtaskMap[matched].l_deviceIdx = matched;
-		taskDevMap[matched].min_tskIdx = 1;
-		taskDevMap[matched].max_tskIdx = 3;
-		matched++;
-	}
-
-	for (i = 0; i < clXplr.numACCEL; i++) {
-
-		taskDevMap[matched].mappedDevice = accel[i];
-		//devtaskMap[matched].l_deviceIdx = matched;
-		taskDevMap[matched].min_tskIdx = 5;
-		taskDevMap[matched].max_tskIdx = 5;
-		matched++;
-	}
-
-*/
 	switch (devSelection) {
 	case ALL_DEVICES:
 

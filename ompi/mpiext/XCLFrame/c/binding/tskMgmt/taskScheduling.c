@@ -14,9 +14,9 @@ int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info*
 	char* token;
 	char cwd[1024];
 	int slot=0;
-	int currentMin=0;
+	int currentMin=0; //min in the taskDev Map
 
-
+	int devType;
 
 	config_fp = fopen("./taskSched.cfg", "r");
 	if(config_fp==NULL){
@@ -41,9 +41,14 @@ int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info*
 				//printf("local num tasks: %d \n", l_numTasks);
 			} else {
 
-				switch (atoi(token)) {
-				case CPU:
+				if (strcmp(token, "CPU") == 0) devType=0;
+				if (strcmp(token, "GPU") == 0) devType=1;
+				if (strcmp(token, "ACCEL") == 0) devType=2;
 
+
+				switch (devType) {
+				case CPU:
+					//printf("scheduling in %s ",token );
 					token = strtok(NULL, "\t =\n\r"); //gets the device Id
 					taskDevMap[slot].mappedDevice=cpu[atoi(token)];
 
@@ -62,6 +67,8 @@ int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info*
 					//printf("ID:\t%d\n\n", atoi(token));
 					token = strtok(NULL, "\t =\n\r");
 					//printf("numTasks Assigned:\t%d\n\n", atoi(token));*/
+
+
 					token = strtok(NULL, "\t =\n\r"); //gets the device Id
 					taskDevMap[slot].mappedDevice = gpu[atoi(token)];
 
@@ -101,8 +108,8 @@ int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info*
 	}
 
 	if(currentMin!=l_numTasks){
-		printf("Please review your taskSched config file. Tasks do not match \n");
-		exit(-1);
+		perror("WARNING:: Please review your taskSched config file. Tasks do not match \n");
+		//exit(-1);
 	}
 
 	return 0;

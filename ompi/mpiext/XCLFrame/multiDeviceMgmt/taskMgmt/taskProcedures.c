@@ -151,6 +151,9 @@ void * enqueTaskReq(void *args) {
 	status = clEnqueueNDRangeKernel(l_args->th_queue, l_args->th_kernel, l_args->workDim, NULL,
 			l_args->globalThreads, l_args->localThreads, 0, NULL,
 			NULL);
+	clFlush(l_args->th_queue);
+	clFinish(l_args->th_queue);
+
 	//chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
 	//debug_print("Enqueuing Kernel successful..\n");
 
@@ -264,16 +267,13 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 int XclWaitAllTasks(int numTasks,MPI_Comm comm){
 	int i;
-
 	for(i=0;i<numTasks;i++){
 				pthread_join(thds[i], NULL);
 	}
-/*	for(i=0;i<numTasks;i++){
+	/*for(i=0;i<numTasks;i++){
 		pthread_detach(thds[i]);
 	}*/
-	MPI_Barrier(MPI_COMM_WORLD);
-
-
+	MPI_Barrier(comm);
 	return 0;
 }
 

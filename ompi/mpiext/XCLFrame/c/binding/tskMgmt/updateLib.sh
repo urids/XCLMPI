@@ -8,12 +8,11 @@ make && make install
 
 declare -a hosts=($host1 $host2 $host3)
 
-pathdr='/home/uriel/Dev/mpisrc/XCLMPI/ompi/mpiext/XCLFrame/multiDeviceMgmt'
+
 
 for i in "${hosts[@]}"
 do
 rsync -r $(pwd) uriel@$i:$(pwd)/../
-rsh uriel@$i 'cd /home/uriel/Dev/mpisrc/XCLMPI/ompi/mpiext/XCLFrame/multiDeviceMgmt && make && make install' 
+rsh uriel@$i 'cd /home/uriel/Dev/mpisrc/XCLMPI/ompi/mpiext/XCLFrame/c/binding/tskMgmt && make && make install'
 done
-
 
