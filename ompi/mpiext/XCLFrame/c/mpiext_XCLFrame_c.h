@@ -32,7 +32,8 @@ OMPI_DECLSPEC int OMPI_XclSendRecv(int src_task, int src_trayIdx, int dest_task,
 OMPI_DECLSPEC int OMPI_XclReadTaskBuffer(int taskIdx, int trayIdx, int bufferSize, void * hostBuffer, MPI_Comm comm);
 OMPI_DECLSPEC int OMPI_XclWriteTaskBuffer(int taskIdx, int trayIdx, int bufferSize, void * hostBuffer, MPI_Comm comm);
 //TODO: implement Free routines.
-//OMPI_DECLSPEC int OMPI_XclFreeTaskBuffer(int taskIdx, int trayIdx, MPI_Comm comm);
+OMPI_DECLSPEC int OMPI_XclMallocTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize, MPI_Comm comm);
+OMPI_DECLSPEC int OMPI_XclFreeTaskBuffer(int g_taskIdx, int trayIdx, MPI_Comm comm);
 //OMPI_DECLSPEC int OMPI_XclFreeAllBuffers(int taskIdx, int trayIdx, MPI_Comm comm);
 //OMPI_DECLSPEC int OMPI_XclFreeTask(int taskIdx, int trayIdx, MPI_Comm comm);
 //OMPI_DECLSPEC int OMPI_XclFreeAllTasks(int taskIdx, int trayIdx, MPI_Comm comm);

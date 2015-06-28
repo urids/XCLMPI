@@ -66,12 +66,69 @@ int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * ho
 	return 0;
 }
 
+int OMPI_XclMallocTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize, MPI_Comm comm){
+	int myRank;
+	MPI_Comm_rank(comm, &myRank);
+	if (myRank == g_taskList[g_taskIdx].r_rank) {
+		void * memHandle = NULL; //function pointer
+		int (*initNewBuffer)(int l_taskIdx, int trayIdx, int bufferSize);
+
+		char *error;
+		memHandle = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
+
+		if (!memHandle) {
+			perror("library not found or could not be opened AT: OMPI_XclRecv");
+			exit(1);
+		}
+
+		initNewBuffer = dlsym(memHandle, "initNewBuffer");
+		if ((error = dlerror()) != NULL) {
+			fputs(error, stderr);
+			exit(1);
+		}
+		int l_taskIdx= g_taskList[g_taskIdx].l_taskIdx;
+		(*initNewBuffer)(l_taskIdx, trayIdx, bufferSize);
+	}
+	return 0;
+}
+
+
+
+int OMPI_XclFreeTaskBuffer(int g_taskIdx, int trayIdx, MPI_Comm comm) {
+	int myRank;
+	MPI_Comm_rank(comm, &myRank);
+	if (myRank == g_taskList[g_taskIdx].r_rank) {
+
+		void * libHandle = NULL;
+		void (*XclFreeTaskBuffer)(int, int);
+		char *error;
+
+		libHandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
+
+		if (!libHandle) {
+			printf("library not found or could not be opened %d, %d", __FILE__,__LINE__);
+			exit(1);
+		}
+
+		XclFreeTaskBuffer = dlsym(libHandle, "XclFreeTaskBuffer");
+		if ((error = dlerror()) != NULL) {
+			fputs(error, stderr);
+			exit(1);
+		}
+		int l_taskIdx= g_taskList[g_taskIdx].l_taskIdx;
+		(*XclFreeTaskBuffer)(l_taskIdx, trayIdx);
+
+	}
+	return 0;
+}
+
 
 int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_task, int g_dest_task, int TAG, MPI_Comm comm){
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
 	if (myRank == g_taskList[g_src_task].r_rank) {
 		void* tmpBuffData;
+		MPI_Type_size(MPIentityType, &MPIentityTypeSize);//TODO:  this might conflict with scatter measure.
 		int tmpBuffSz = count * MPIentityTypeSize;
 		tmpBuffData = (void*) malloc(tmpBuffSz);
 
@@ -119,6 +176,7 @@ int OMPI_XclRecv(int trayIdx, int count, MPI_Datatype MPIentityType, int g_src_t
 	MPI_Comm_rank(comm, &myRank);
 	if (myRank == g_taskList[g_recv_task].r_rank) {
 		void* tmpBuffData;
+		MPI_Type_size(MPIentityType, &MPIentityTypeSize);//TODO: this might conflict with scatter measure.
 		int tmpBuffSz = count * MPIentityTypeSize; //buffer size in bytes.
 		tmpBuffData = (void*) malloc(tmpBuffSz);
 
