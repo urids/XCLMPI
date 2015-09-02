@@ -18,6 +18,7 @@ libmultiDeviceMgmt_la_SOURCES = ./errorMgmt/errorHandling.c \
 								./deviceMgmt/memMgmt/bufferRead.c \
 								./deviceMgmt/memMgmt/bufferWrite.c \
 								./deviceMgmt/memMgmt/bufferFree.c \
+								./deviceMgmt/memMgmt/intraDevBufferCpy.c \
 								./taskMgmt/taskProcedures.c
 
 # Linker options libTestProgram

@@ -76,8 +76,8 @@ singleSidedComms/singleSidedComms.lo: singleSidedComms/singleSidedComms.c \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/Device.h \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
  binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
- binding/tskMgmt/deviceMap.h singleSidedComms/entityInfo.h \
- singleSidedComms/../taskMap.h
+ binding/tskMgmt/deviceMap.h binding/tskMgmt/../../taskMap.h \
+ singleSidedComms/entityInfo.h singleSidedComms/../taskMap.h
 
 singleSidedComms/singleSidedComms.h:
 
@@ -266,6 +266,8 @@ binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h:
 binding/tskMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
 
 binding/tskMgmt/deviceMap.h:
+
+binding/tskMgmt/../../taskMap.h:
 
 singleSidedComms/entityInfo.h:
 

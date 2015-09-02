@@ -362,6 +362,7 @@ am_libmultiDeviceMgmt_la_OBJECTS = ./errorMgmt/errorHandling.lo \
 	./deviceMgmt/memMgmt/bufferRead.lo \
 	./deviceMgmt/memMgmt/bufferWrite.lo \
 	./deviceMgmt/memMgmt/bufferFree.lo \
+	./deviceMgmt/memMgmt/intraDevBufferCpy.lo \
 	./taskMgmt/taskProcedures.lo
 libmultiDeviceMgmt_la_OBJECTS = $(am_libmultiDeviceMgmt_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -1503,6 +1504,7 @@ libmultiDeviceMgmt_la_SOURCES = ./errorMgmt/errorHandling.c \
 								./deviceMgmt/memMgmt/bufferRead.c \
 								./deviceMgmt/memMgmt/bufferWrite.c \
 								./deviceMgmt/memMgmt/bufferFree.c \
+								./deviceMgmt/memMgmt/intraDevBufferCpy.c \
 								./taskMgmt/taskProcedures.c
 
 
@@ -1612,6 +1614,9 @@ deviceMgmt/memMgmt/$(DEPDIR)/$(am__dirstamp):
 ./deviceMgmt/memMgmt/bufferFree.lo:  \
 	deviceMgmt/memMgmt/$(am__dirstamp) \
 	deviceMgmt/memMgmt/$(DEPDIR)/$(am__dirstamp)
+./deviceMgmt/memMgmt/intraDevBufferCpy.lo:  \
+	deviceMgmt/memMgmt/$(am__dirstamp) \
+	deviceMgmt/memMgmt/$(DEPDIR)/$(am__dirstamp)
 taskMgmt/$(am__dirstamp):
 	@$(MKDIR_P) ./taskMgmt
 	@: > taskMgmt/$(am__dirstamp)
@@ -1643,6 +1648,7 @@ include ./deviceMgmt/memMgmt/$(DEPDIR)/bufferFree.Plo
 include ./deviceMgmt/memMgmt/$(DEPDIR)/bufferInit.Plo
 include ./deviceMgmt/memMgmt/$(DEPDIR)/bufferRead.Plo
 include ./deviceMgmt/memMgmt/$(DEPDIR)/bufferWrite.Plo
+include ./deviceMgmt/memMgmt/$(DEPDIR)/intraDevBufferCpy.Plo
 include ./errorMgmt/$(DEPDIR)/errorHandling.Plo
 include ./taskMgmt/$(DEPDIR)/taskProcedures.Plo
 

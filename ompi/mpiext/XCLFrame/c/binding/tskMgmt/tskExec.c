@@ -128,3 +128,63 @@ int XclWaitAllTasks(MPI_Comm comm){
 
  	 return MPI_SUCCESS;
  }
+
+int XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm){
+//global to local task's Id conversion.
+
+	int myRank;
+	MPI_Comm_rank(comm, &myRank);
+
+
+	int * l_tasks=NULL;
+	int l_taskCounter=0;
+	int i,j;
+	for(i=0;i<numTasks;i++){
+		j=taskIds[i];
+		if(myRank==g_taskList[j].r_rank){
+			l_taskCounter++;
+
+			int * tmp_l_task;
+			tmp_l_task=realloc(l_tasks,l_taskCounter*sizeof(int)); //TODO: review not null pointer return.
+
+			if (tmp_l_task != NULL) {
+				l_tasks = tmp_l_task;
+				l_tasks[l_taskCounter - 1] = g_taskList[j].l_taskIdx;
+			} else {
+				free(l_tasks);
+				printf("Error AT:(re)allocating memory %s ,%s", __FILE__,__LINE__);
+				exit(1);
+			}
+		}
+	}
+
+
+//finall function call to multiDeviceMgmt.
+if(l_taskCounter > 0){
+	void *dlhandle;
+
+	int (*XclWaitFor)(int l_numTasks, int* l_taskIds, MPI_Comm comm);
+	char *error;
+
+	dlhandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
+	if (!dlhandle) {
+		fputs(dlerror(), stderr);
+		exit(1);
+	}
+
+	XclWaitFor = dlsym(dlhandle, "XclWaitFor");
+
+	if ((error = dlerror()) != NULL) {
+		fputs(error, stderr);
+		exit(1);
+	}
+	int err;
+	err = (*XclWaitFor)(l_taskCounter,l_tasks, comm);
+	dlclose(dlhandle);
+}
+
+
+	return MPI_SUCCESS;
+
+
+}

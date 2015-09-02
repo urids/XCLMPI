@@ -225,10 +225,48 @@ int OMPI_XclSendRecv(int src_task, int src_trayIdx,
 		             int count, MPI_Datatype MPIentityType,
 		             MPI_Comm comm) {
 	int TAG = 0;
+	int myRank;
+	MPI_Comm_rank(comm, &myRank);
+	int l_src_task = g_taskList[src_task].l_taskIdx;
+	int l_dst_task = g_taskList[dest_task].l_taskIdx;
 
-	OMPI_XclSend(src_trayIdx, count, MPIentityType, src_task, dest_task, TAG, comm);
-	OMPI_XclRecv(dest_trayIdx, count, MPIentityType, src_task, dest_task, TAG, comm);
+	if (myRank == g_taskList[src_task].r_rank
+			&& myRank == g_taskList[dest_task].r_rank  //if ranks match
+				&& taskList[l_src_task].device[0].deviceId==taskList[l_dst_task].device[0].deviceId) { //if deice match
+				//then call intra-device copy.
+				void * libHandler = NULL; //function pointer
+				int (*intracpyBuffer)(int src_taskId, int srcTrayIdx,int dst_taskId, int dstTrayIdx, int bufferSize);
 
+				char *error;
+				libHandler = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
+
+				if (!libHandler) {
+					perror("library not found or could not be opened AT: OMPI_XclRecv");
+					exit(1);
+				}
+
+				intracpyBuffer = dlsym(libHandler, "intracpyBuffer");
+				if ((error = dlerror()) != NULL) {
+					fputs(error, stderr);
+					exit(1);
+				}
+
+
+
+				int entityTypeSz;//TODO: can I use MPIentityTypeSize.
+				MPI_Type_size(MPIentityType, &entityTypeSz);
+				int cpyBuffSz = count * entityTypeSz;
+
+				(*intracpyBuffer)(l_src_task,src_trayIdx,l_dst_task,dest_trayIdx,cpyBuffSz);
+
+
+	} else { //perform the copy using MPI
+
+		OMPI_XclSend(src_trayIdx, count, MPIentityType, src_task, dest_task,
+				TAG, comm);
+		OMPI_XclRecv(dest_trayIdx, count, MPIentityType, src_task, dest_task,
+				TAG, comm);
+	}
 	return 0;
 
 }

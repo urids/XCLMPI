@@ -278,3 +278,14 @@ int XclWaitAllTasks(int numTasks,MPI_Comm comm){
 }
 
 
+int XclWaitFor(int l_numTasks, int* l_taskIds, MPI_Comm comm){
+	int i,j;
+
+		for(i=0;i<l_numTasks;i++){
+			j=l_taskIds[i];
+			pthread_join(thds[j], NULL);
+		}
+		MPI_Barrier(comm);
+		return 0;
+}
+

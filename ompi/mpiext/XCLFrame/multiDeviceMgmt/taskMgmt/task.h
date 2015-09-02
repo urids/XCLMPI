@@ -50,7 +50,7 @@ typedef struct XCLtask_st{
 	XCLkernel* kernel;
 
 	int numTrays; //number of trays for this task
-	XCLTrayInfo *trayInfo; /*info about size and type of tray.
+	XCLTrayInfo *trayInfo; /*info about size and mode of tray.
 	 	 	 	 	 	 	 	 the current cl_mem object is managed by its device*/
 
 	int Rack; //number Of Rack in device of this task. two task may have same number of rack

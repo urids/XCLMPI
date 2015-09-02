@@ -28,6 +28,7 @@
 #include "../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h"
 #include "../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h"
 #include "deviceMap.h"
+#include "../../taskMap.h"
 
 //#include "../../singleSidedComms/XclScatter.h"
 

@@ -58,11 +58,37 @@ int initNewBuffer(int taskIdx, int trayIdx, int bufferSize ){
 
 		taskList[taskIdx].device[0].memHandler[myRack][trayIdx] = clCreateBuffer(
 								taskList[taskIdx].device[0].context,
-								CL_MEM_READ_WRITE,
+								CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, //best practice
 								bufferSize,
 								NULL,
 								&status);
-		chkerr(status, "Error at: Creating new Mem Buffer, %s: %d", __FILE__, __LINE__);
+
+		/*This section ensures proper device memory allocation.*/
+		char * dset=malloc(3*sizeof(char));//="0\0";
+	/*	dset=clEnqueueMapBuffer(taskList[taskIdx].device[0].queue,
+								taskList[taskIdx].device[0].memHandler[myRack][trayIdx],
+								CL_TRUE,
+								CL_MAP_WRITE,
+								bufferSize-2,
+								bufferSize,
+								0,NULL,NULL,NULL);*/
+		dset="a\0";
+		status|=clEnqueueWriteBuffer(taskList[taskIdx].device[0].queue,
+								  taskList[taskIdx].device[0].memHandler[myRack][trayIdx],
+								  CL_TRUE,
+								  bufferSize-2,
+								  2,
+								  dset,
+								  0,NULL,NULL);
+
+/*
+		status|=clEnqueueUnmapMemObject(taskList[taskIdx].device[0].queue,
+								 taskList[taskIdx].device[0].memHandler[myRack][trayIdx],
+								  (void*)dset,
+								  0,NULL,NULL);
+*/
+
+		chkerr(status, "Error at: Creating new Mem Buffer", __FILE__, __LINE__);
 
 	}
 

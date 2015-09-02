@@ -73,7 +73,7 @@ tskMgmt.lo: tskMgmt.c tskMgmt.h /usr/include/unistd.h \
  ../../../multiDeviceMgmt/deviceMgmt/Device.h \
  ../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
  ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
- deviceMap.h
+ deviceMap.h ../../taskMap.h
 
 tskMgmt.h:
 
@@ -260,3 +260,5 @@ tskMgmt.h:
 ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
 
 deviceMap.h:
+
+../../taskMap.h:
