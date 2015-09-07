@@ -1,0 +1,3 @@
+#git checkout -b taskScheduling
+#... edit files, add and commit ...
+git add -f * && git commit -m "composition $(date +%Y%m%d)" && git push -u origin taskScheduling

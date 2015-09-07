@@ -14,7 +14,7 @@ typedef struct taskInfo_st{
 	int r_rank;
 }taskInfo;
 
-//test
+//test //test2
 extern taskInfo* g_taskList; //defined in late.c
 
 #endif /* TASKMAP_H_ */
