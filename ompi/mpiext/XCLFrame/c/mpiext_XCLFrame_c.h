@@ -20,7 +20,13 @@
 
 //this function collect in root node the information of all devices in each node of the communicator.
 //TODO: maybe we also must implement something like myRank.
-OMPI_DECLSPEC int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm); //first parameter for this represents "ALL" or "GPUs" this function returns
+
+// this function also forma part of the framework but is declred in XclScatter.h (just for fun!!)
+//            int OMPI_commit_EntityType(int blockcount, int* blocklen, MPI_Aint* displacements, MPI_Datatype* basictypes, MPI_Datatype * newDatatype);
+
+
+OMPI_DECLSPEC int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm); //this function returns global number of devices in the system
+OMPI_DECLSPEC int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm); //first parameter for this represents "ALL" or "GPUs" this function returns
 OMPI_DECLSPEC int OMPI_XclCreateKernel(MPI_Comm comm,char* srcPath,char* kernelName);
 //OMPI_DECLSPEC int OMPI_XclExecKernel(MPI_Comm communicator,int selTask,int globalThreads, int localThreads,const char * fmt, ...) __attribute__((format (printf, 5, 6)));
 OMPI_DECLSPEC int OMPI_XclExecKernel(MPI_Comm communicator,int selTask,int workDim, size_t * globalThreads, size_t * localThreads,const char * fmt, ...) __attribute__((format (printf, 6, 7)));

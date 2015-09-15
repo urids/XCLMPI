@@ -21,7 +21,8 @@ typedef struct CLxplorInfo_st{
 }CLxplorInfo;
 
 
-extern CLxplorInfo clXplr;
+extern CLxplorInfo clXplr; //global variable defined in mpiext_XCLFrame_early.c
+
 
 CLxplorInfo deviceExploration();
 

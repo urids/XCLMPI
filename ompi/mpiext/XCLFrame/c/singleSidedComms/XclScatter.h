@@ -25,7 +25,7 @@ struct entityData_st{
 }entityData;
 
 
-//this declaration coul be in mpiext_XCLFrame but also can be here becaouse this file
+//this declaration could be in mpiext_XCLFrame_c.h but also can be here because this file
 // is included in the automake file $makefile.am$
 int OMPI_commit_EntityType(int blockcount, int* blocklen, MPI_Aint* displacements, MPI_Datatype* basictypes, MPI_Datatype * newDatatype);
 

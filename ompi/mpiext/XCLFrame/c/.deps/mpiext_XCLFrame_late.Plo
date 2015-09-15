@@ -168,7 +168,7 @@ mpiext_XCLFrame_late.lo: mpiext_XCLFrame_late.c \
  ../../../../ompi/mpiext/XCLFrame/c/../multiDeviceMgmt/taskMgmt/task.h \
  ../../../../ompi/mpiext/XCLFrame/c/../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../../../../ompi/mpiext/XCLFrame/c/../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
- taskMap.h
+ taskMap.h binding/dvMgmt/PUsMap.h
 
 ../../../../ompi/include/ompi_config.h:
 
@@ -583,3 +583,5 @@ mpiext_XCLFrame_c.h:
 ../../../../ompi/mpiext/XCLFrame/c/../multiDeviceMgmt/deviceMgmt/devicesInitialization.h:
 
 taskMap.h:
+
+binding/dvMgmt/PUsMap.h:

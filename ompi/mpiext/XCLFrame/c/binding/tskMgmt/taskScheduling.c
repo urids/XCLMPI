@@ -3,6 +3,44 @@
 
 #define MAX_LINE_LEN 256
 
+int __attribute__ ((visibility ("protected"))) getNumDecls(){
+
+	FILE* config_fp;
+		char line[MAX_LINE_LEN + 1];
+		char* token;
+		char cwd[1024];
+		int declsLineCounter=0;
+
+		config_fp = fopen("./taskSched.cfg", "r");
+		if(config_fp==NULL){
+
+			   if (getcwd(cwd, sizeof(cwd)) != NULL)
+			       printf("Current working dir: %s\n", cwd);
+			   else
+			       perror("getcwd() error");
+
+			perror("task-Device configuration file not found.!! \n");
+			exit(-1);
+		}
+
+
+		while (fgets(line, MAX_LINE_LEN, config_fp) != NULL) {
+			token = strtok(line, "\t =\n\r");
+			if (token != NULL && token[0] != '#') {
+
+
+					if (strcmp(token, "CPU") == 0) declsLineCounter++;
+					if (strcmp(token, "GPU") == 0) declsLineCounter++;
+					if (strcmp(token, "ACCEL") == 0) declsLineCounter++;
+
+
+			}
+		}
+
+	return declsLineCounter;
+}
+
+
 int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info* taskDevMap) {
 
 	enum devDesc {
@@ -61,18 +99,18 @@ int __attribute__ ((visibility ("protected"))) readTaskBinding(device_Task_Info*
 					slot++;
 
 					break;
-				case GPU:/*
-					//printf("Device type::\t%s\n", token);
+				case GPU:
+					/*printf("Device type::\t%s\n", token);
 					token = strtok(NULL, "\t =\n\r");
-					//printf("ID:\t%d\n\n", atoi(token));
+					printf("ID:\t%d\n\n", atoi(token));
 					token = strtok(NULL, "\t =\n\r");
-					//printf("numTasks Assigned:\t%d\n\n", atoi(token));*/
+					printf("numTasks Assigned:\t%d\n\n", atoi(token));*/
 
 
 					token = strtok(NULL, "\t =\n\r"); //gets the device Id
 					taskDevMap[slot].mappedDevice = gpu[atoi(token)];
 
-					token = strtok(NULL, "\t =\n\r"); //gets the num of tasks
+					token = strtok(NULL, "\t =\n\r"); //gets the number of tasks
 					taskDevMap[slot].min_tskIdx = currentMin;
 					taskDevMap[slot].max_tskIdx = currentMin + atoi(token)-1;
 					currentMin = currentMin + atoi(token) ;

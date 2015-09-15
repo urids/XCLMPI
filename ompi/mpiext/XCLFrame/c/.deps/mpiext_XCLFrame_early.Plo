@@ -161,7 +161,8 @@ mpiext_XCLFrame_early.lo: mpiext_XCLFrame_early.c \
  ../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
  ../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../multiDeviceMgmt/deviceMgmt/localDevices.h \
- ../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h
+ ../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
+ binding/dvMgmt/commsBench.h
 
 ../../../../ompi/include/ompi_config.h:
 
@@ -560,3 +561,5 @@ mpiext_XCLFrame_c.h:
 ../multiDeviceMgmt/deviceMgmt/localDevices.h:
 
 ../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
+
+binding/dvMgmt/commsBench.h:

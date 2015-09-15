@@ -4,6 +4,7 @@
 #include "ompi/mpi/c/bindings.h"
 #include "ompi/mpiext/mpiext.h"
 #include "mpiext_XCLFrame_c.h"
+#include "binding/dvMgmt/commsBench.h" //TODO: must this be here to keep architecture schema?
 
 
 /* 
@@ -14,10 +15,27 @@
 
 
 //these elements have extern linkage and lives in the runtime system memory
+
+/*
+ * Here we put the definition of global variables that CAN NOT be queried in the user application
+ *
+ */
+
+/* ==================================
+ * | INIT OF GLOBAL INITIALIZATIONS |
+ * ==================================
+ * */
+
 CLxplorInfo clXplr; //Global Variable Declared in deviceExploration.h
 cpudev*   cpu; // Global Variable declared in localDevices.h
 gpudev*   gpu; // Global Variable declared in localDevices.h
 acceldev* accel; // Global Variable declared in localDevices.h
+
+/* ==================================
+ * | END OF GLOBAL INITIALIZATIONS  |
+ * ==================================
+ * */
+
 
 
 
@@ -27,6 +45,7 @@ static int XCLFrame_init(void)
 
 	void (*deviceXploration)(CLxplorInfo *);
 	void (*initializeDevices)(CLxplorInfo*);
+	int (*commsBenchmark)(commsInfo*);
 
 
 	char *error;
@@ -41,6 +60,7 @@ static int XCLFrame_init(void)
 
 	deviceXploration = dlsym(dvMgmt_dlhandle, "deviceXploration");
 	initializeDevices = dlsym(dvMgmt_dlhandle, "initializeDevices");
+	commsBenchmark=dlsym(dvMgmt_dlhandle, "commsBenchmark");
 
 	if ((error = dlerror()) != NULL ) {
 		fputs(error, stderr);
@@ -51,6 +71,13 @@ static int XCLFrame_init(void)
 
     (*deviceXploration)(&clXplr);
     (*initializeDevices)(&clXplr);
+
+
+    //After each device has been initialized we can perform communication benchmarks.
+    commsInfo cmf;
+    cmf.BW_Mtx=NULL;
+    //(*commsBenchmark)(&cmf);
+    //printf("%8.8f",cmf.BW_Mtx[0]);
 
 
     dlclose(dvMgmt_dlhandle);

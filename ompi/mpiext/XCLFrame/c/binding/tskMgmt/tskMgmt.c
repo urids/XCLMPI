@@ -7,14 +7,18 @@ device_Task_Info* taskDevMap;
 int createTaskList(int devSelection){ //There exist only one taskList per Node and each task has a device.
 
 int i,j;
-taskDevMap=malloc(clXplr.numDevices*sizeof(device_Task_Info));
+//taskDevMap=malloc(clXplr.numDevices*sizeof(device_Task_Info));
 
-for (i = 0; i < clXplr.numDevices; i++) {
-			taskDevMap[i].min_tskIdx=-1; //By default each device has none assigned task.
+int numDecls=getNumDecls(); //this first step enables to get the number of lines with matchmaking decls.
+taskDevMap=malloc(numDecls*sizeof(device_Task_Info));
+
+for (i = 0; i < numDecls; i++) {
+			taskDevMap[i].min_tskIdx=-1; //By default each device has no assigned task.
 }
 
-readTaskBinding(taskDevMap);
+readTaskBinding(taskDevMap); //defined in taskScheduling.c to read taskSched.cfg file.
 
+debug_print("1.- read taskDevMap succeed!!\n");
 	switch (devSelection) {
 	case ALL_DEVICES:
 
@@ -28,7 +32,7 @@ readTaskBinding(taskDevMap);
 
 
 
-		for (i = 0; i < clXplr.numDevices; i++) {
+		for (i = 0; i <l_numTasks; i++) {
 			if(taskDevMap[i].min_tskIdx!=(-1))//perform resource allocation iff has any assignation.
 			for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
 				debug_print("-----matching task %d ------\n",j);
@@ -41,7 +45,7 @@ readTaskBinding(taskDevMap);
 				if (rackIdx == 0) {
 					taskList[j].device[0].memHandler = malloc(1 * sizeof(cl_mem*));
 					//taskList[j].device[0].memHandler[0] = malloc(1 * sizeof(cl_mem));
-					taskList[j].Rack = rackIdx;
+					taskList[j].Rack = rackIdx; //rack assignment
 					taskList[j].device[0].numRacks++;
 				} else {
 					cl_mem** tmpRack;

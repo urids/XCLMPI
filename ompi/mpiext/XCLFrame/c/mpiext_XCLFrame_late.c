@@ -11,15 +11,71 @@
 #include "hiddenComms.h"
 #include "ompi/mpiext/XCLFrame/c/mpiext_XCLFrame_c.h"
 #include "taskMap.h"
+#include "binding/dvMgmt/PUsMap.h"
+#include "../multiDeviceMgmt/deviceMgmt/deviceExploration.h"
 
+/*
+ * Here we put the definition of variables that can be queried in the user application
+ * through an API call =)!!
+ */
 
+/* ==================================
+ * | INIT OF GLOBAL INITIALIZATIONS |
+ * ==================================
+ * */
+
+PUInfo* g_PUList; //Global Variable declared at PUsMap.h
+int g_numDevs;  //Global Variable declared at PUsMap.h
 XCLtask* taskList; // Global Variable declared in task.h
 taskInfo* g_taskList; //Global Variable declared at taskMap.h
 int l_numTasks;//Global variable declared in tskMgmt.h
+
+
+/* ==================================
+ * | END OF GLOBAL INITIALIZATIONS  |
+ * ==================================
+ * */
+
 int numRanks, myRank, HostNamelen;
+
 
 int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
 
+int i,j,k;
+int myRank,numRanks;
+int l_numDevs;
+
+
+	l_numDevs=clXplr.numDevices;
+	MPI_Comm_rank(comm, &myRank);
+	MPI_Comm_size(comm,&numRanks);
+
+	int* DPRKS =(int*)malloc(numRanks*sizeof(int)); //DPRKS-> Devices Per RanK Structure
+	MPI_Allgather(&l_numDevs,1,MPI_INT,DPRKS,1,MPI_INT,comm);
+
+	for(g_numDevs=0,i=0;i<numRanks;i++){
+		g_numDevs+=DPRKS[i];
+	}
+
+ //this section creates the global PUs map structure.
+	g_PUList=(PUInfo*)malloc(g_numDevs*sizeof(PUInfo)); //TODO: find the space for deallocation.
+
+	for(i=0;i<g_numDevs;i++)
+		g_PUList[i].g_PUIdx=i;
+
+	for(i=0,k=0;i<numRanks;i++){
+		for(j=0;j<DPRKS[i];j++){
+			g_PUList[k].r_rank=i;
+			g_PUList[k].l_PUIdx=j;
+			k++;
+		}
+	}
+
+	return g_numDevs;
+}
+
+int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm){
+	int numRanks, myRank, HostNamelen;
 	int i,j,k; //indx variables.
 
 
@@ -48,21 +104,10 @@ int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
 
 	(*createTaskList)(devSelection);
 
-/*//TODO: This section is for delegating master node for load balancing.
-	if (myRank == 0) {
-
-		rcvXploreInfo(comm);
-
-	} else {
-
-		sendXploreInfo(comm);
-
-	}
-*/
 	dlclose(tskMgmt_dlhandle);
 
 
-	int* RKS =(int*)malloc(numRanks*sizeof(int));
+	int* RKS =(int*)malloc(numRanks*sizeof(int)); //RKS-> RanK Structure  meaningless /??
 	MPI_Allgather(&l_numTasks,1,MPI_INT,RKS,1,MPI_INT,comm);
 
 	int g_numTasks;

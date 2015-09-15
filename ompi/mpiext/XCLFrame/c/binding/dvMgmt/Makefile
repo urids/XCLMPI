@@ -354,7 +354,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(dvMgmtdir)"
 LTLIBRARIES = $(dvMgmt_LTLIBRARIES)
 libdvMgmt_la_LIBADD =
-am_libdvMgmt_la_OBJECTS = dvXplore.lo dvInit.lo memMgmt.lo
+am_libdvMgmt_la_OBJECTS = dvXplore.lo dvInit.lo memMgmt.lo \
+	commsBench.lo
 libdvMgmt_la_OBJECTS = $(am_libdvMgmt_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -1489,7 +1490,8 @@ dvMgmt_LTLIBRARIES = libdvMgmt.la
 # Sources for libmultiDeviceMgmt
 libdvMgmt_la_SOURCES = dvXplore.c \
 					  dvInit.c \
-					  memMgmt.c
+					  memMgmt.c \
+					  commsBench.c
 
 libdvMgmt_la_LDFLAGS = -ldl	-lOpenCL -Wl,-rpath,$(libdir)/XCLFrame/multiDeviceMgmt			  
 all: all-am
@@ -1569,6 +1571,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/commsBench.Plo
 include ./$(DEPDIR)/dvInit.Plo
 include ./$(DEPDIR)/dvXplore.Plo
 include ./$(DEPDIR)/memMgmt.Plo

@@ -27,6 +27,8 @@ dvInit.lo: dvInit.c dvMgmt.h /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/dlfcn.h \
  /usr/include/x86_64-linux-gnu/bits/dlfcn.h \
+ ../../../../../../ompi/include/mpi.h \
+ ../../../../../../ompi/include/mpi_portable_platform.h \
  ../../../multiDeviceMgmt/deviceMgmt/Device.h \
  /usr/local/cuda-5.5/include/CL/cl.h \
  /usr/local/cuda-5.5/include/CL/cl_platform.h \
@@ -41,7 +43,8 @@ dvInit.lo: dvInit.c dvMgmt.h /usr/include/stdlib.h \
  ../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
  ../../../multiDeviceMgmt/deviceMgmt/Device.h \
  ../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
- ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h
+ ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
+ PUsMap.h
 
 dvMgmt.h:
 
@@ -119,6 +122,10 @@ dvMgmt.h:
 
 /usr/include/x86_64-linux-gnu/bits/dlfcn.h:
 
+../../../../../../ompi/include/mpi.h:
+
+../../../../../../ompi/include/mpi_portable_platform.h:
+
 ../../../multiDeviceMgmt/deviceMgmt/Device.h:
 
 /usr/local/cuda-5.5/include/CL/cl.h:
@@ -150,3 +157,5 @@ dvMgmt.h:
 ../../../multiDeviceMgmt/deviceMgmt/localDevices.h:
 
 ../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
+
+PUsMap.h:
