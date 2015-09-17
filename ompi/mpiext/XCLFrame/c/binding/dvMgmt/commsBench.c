@@ -16,7 +16,7 @@ int l_numTasks;//Global variable declared in tskMgmt.h
 int i,j,k;
 
 int commsBenchmark(commsInfo* cmInf){
-	/*int g_orig, int g_dest*/
+
 
 	//*(cmInf->BW_Mtx)=0.0;
 
