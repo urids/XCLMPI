@@ -60,7 +60,7 @@ static int XCLFrame_init(void)
 
 	deviceXploration = dlsym(dvMgmt_dlhandle, "deviceXploration");
 	initializeDevices = dlsym(dvMgmt_dlhandle, "initializeDevices");
-	commsBenchmark=dlsym(dvMgmt_dlhandle, "commsBenchmark");
+
 
 	if ((error = dlerror()) != NULL ) {
 		fputs(error, stderr);
@@ -72,14 +72,6 @@ static int XCLFrame_init(void)
     (*deviceXploration)(&clXplr);
     (*initializeDevices)(&clXplr);
 
-
-    //After each device has been initialized we can perform communication benchmarks.
-    commsInfo cmf;
-    cmf.BW_Mtx=NULL;
-    //(*commsBenchmark)(&cmf);
-    //printf("%8.8f",cmf.BW_Mtx[0]);
-
-
     dlclose(dvMgmt_dlhandle);
 
     
@@ -88,6 +80,7 @@ static int XCLFrame_init(void)
 
 static int XCLFrame_fini(void)
 {
+	//After each device has been initialized we can perform communication benchmarks.
        return OMPI_SUCCESS;
 }
 

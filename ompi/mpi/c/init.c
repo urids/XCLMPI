@@ -27,6 +27,10 @@
 #include "ompi/communicator/communicator.h"
 #include "ompi/errhandler/errhandler.h"
 #include "ompi/constants.h"
+//TODO: review this include according to the Architecture
+#include "../../../mpiext/XCLFrame/c/binding/dvMgmt/commsBench.h"
+#include "../../../mpiext/XCLFrame/scheduling/commsInfo.h"
+#include <dlfcn.h>
 
 #if OPAL_HAVE_WEAK_SYMBOLS && OMPI_PROFILING_DEFINES
 #pragma weak MPI_Init = PMPI_Init
@@ -100,6 +104,28 @@ int MPI_Init(int *argc, char ***argv)
     }
 
     OPAL_CR_INIT_LIBRARY();
+
+    //Assume we have now the MPI_COMM_WORLD Communicator!!!
+
+	void *dvMgmt_dlhandle;
+	int (*commsBenchmark)(commsInfo*);
+
+	char *error;
+
+	dvMgmt_dlhandle = dlopen("libdvMgmt.so", RTLD_LAZY);
+
+	if (!dvMgmt_dlhandle) {
+		printf("Details:");
+		fputs(dlerror(), stderr);
+		exit(1);
+	}
+
+	commsBenchmark = dlsym(dvMgmt_dlhandle, "commsBenchmark");
+
+	commsInfo cmf;
+	cmf.BW_Mtx = NULL;
+	(*commsBenchmark)(&cmf);
+	//printf("%8.8f",cmf.BW_Mtx[0]);
 
     return MPI_SUCCESS;
 }

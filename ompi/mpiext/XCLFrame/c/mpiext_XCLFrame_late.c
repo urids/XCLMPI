@@ -102,12 +102,12 @@ int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm){
 			exit(1);
 		}
 
-	(*createTaskList)(devSelection);
+	(*createTaskList)(devSelection); //function defined in tskMgmt.c
 
 	dlclose(tskMgmt_dlhandle);
 
 
-	int* RKS =(int*)malloc(numRanks*sizeof(int)); //RKS-> RanK Structure  meaningless /??
+	int* RKS =(int*)malloc(numRanks*sizeof(int)); //RKS-> RanK Structure
 	MPI_Allgather(&l_numTasks,1,MPI_INT,RKS,1,MPI_INT,comm);
 
 	int g_numTasks;

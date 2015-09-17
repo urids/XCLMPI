@@ -8,9 +8,16 @@
 #ifndef COMMSBENCH_H_
 #define COMMSBENCH_H_
 
-#include "ompi/include/mpi.h"
+
 #include "stdlib.h"
 #include "stdio.h"
+#include "dvMgmt.h"
+#include "ompi/include/mpi.h"
+#include "../../../multiDeviceMgmt/taskMgmt/task.h"
+#include "../tskMgmt/deviceMap.h"
+#include "../../../c/taskMap.h"
+
+
 
 //msg size starts in 16 MB and duplicates up to 128 MB
 #define MIN_SIZE (1<<24) //16 MB

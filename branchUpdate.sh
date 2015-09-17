@@ -1,3 +1,3 @@
 #git checkout -b taskScheduling
 #... edit files, add and commit ...
-git add -f * && git commit -m "initial comms benchmark" && git push -u origin taskScheduling
+git add -f * && git commit -m "branch taskSched Update $(date +%Y%m%d)" && git push -u origin taskScheduling

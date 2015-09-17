@@ -80,6 +80,7 @@ SUBDIRS = \
         datatype \
         debuggers \
         etc \
+        mpiext/XCLFrame/scheduling \
         mpi/c \
         mpi/tool \
         $(OMPI_MPIEXT_C_DIRS) \

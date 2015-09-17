@@ -1730,7 +1730,7 @@ OPAL_ASSEMBLY_ARCH = AMD64
 OPAL_ASSEMBLY_BUILTIN = BUILTIN_NO
 OPAL_ASSEMBLY_FORMAT = default-.text-.globl-:--.L-@-1-0-1-1-1
 OPAL_CC_ABSOLUTE = /usr/bin/gcc
-OPAL_CONFIGURE_DATE = Sat Apr  4 15:12:17 CST 2015
+OPAL_CONFIGURE_DATE = Wed Sep 16 23:39:18 CDT 2015
 OPAL_CONFIGURE_HOST = myHost
 OPAL_CONFIGURE_USER = uriel
 OPAL_CXX_ABSOLUTE = /usr/bin/g++
@@ -2094,8 +2094,8 @@ mpi_fortran_base_lib =
 
 # NOTE: The ordering of this list is VERY CAREFULLY CRAFTED!  Do not
 # change the ordering unless you really know what you're doing.  :-)
-SUBDIRS = include datatype debuggers etc mpi/c mpi/tool \
-	$(OMPI_MPIEXT_C_DIRS) mpi/fortran/base/ \
+SUBDIRS = include datatype debuggers etc mpiext/XCLFrame/scheduling \
+	mpi/c mpi/tool $(OMPI_MPIEXT_C_DIRS) mpi/fortran/base/ \
 	$(MCA_ompi_FRAMEWORKS_SUBDIRS) \
 	$(MCA_ompi_FRAMEWORK_COMPONENT_STATIC_SUBDIRS) . mpi/cxx \
 	$(OMPI_MPIEXT_MPIFH_DIRS) mpi/fortran/mpif-h \

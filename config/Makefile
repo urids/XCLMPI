@@ -73,7 +73,8 @@ host_triplet = x86_64-unknown-linux-gnu
 target_triplet = x86_64-unknown-linux-gnu
 subdir = config
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in compile \
-	config.guess config.sub install-sh ltmain.sh missing ylwrap
+	config.guess config.sub depcomp install-sh ltmain.sh missing \
+	ylwrap
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/c_get_alignment.m4 \
 	$(top_srcdir)/config/c_weak_symbols.m4 \
@@ -1113,7 +1114,7 @@ OPAL_ASSEMBLY_ARCH = AMD64
 OPAL_ASSEMBLY_BUILTIN = BUILTIN_NO
 OPAL_ASSEMBLY_FORMAT = default-.text-.globl-:--.L-@-1-0-1-1-1
 OPAL_CC_ABSOLUTE = /usr/bin/gcc
-OPAL_CONFIGURE_DATE = Sat Apr  4 15:12:17 CST 2015
+OPAL_CONFIGURE_DATE = Wed Sep 16 23:39:18 CDT 2015
 OPAL_CONFIGURE_HOST = myHost
 OPAL_CONFIGURE_USER = uriel
 OPAL_CXX_ABSOLUTE = /usr/bin/g++

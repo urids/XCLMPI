@@ -2094,8 +2094,8 @@ EXTRA_DIST = CMakeLists.txt tools/win_makefile tools/CMakeLists.txt \
 
 # NOTE: The ordering of this list is VERY CAREFULLY CRAFTED!  Do not
 # change the ordering unless you really know what you're doing.  :-)
-SUBDIRS = include datatype debuggers etc mpi/c mpi/tool \
-	$(OMPI_MPIEXT_C_DIRS) mpi/fortran/base/ \
+SUBDIRS = include datatype debuggers etc mpiext/XCLFrame/scheduling \
+	mpi/c mpi/tool $(OMPI_MPIEXT_C_DIRS) mpi/fortran/base/ \
 	$(MCA_ompi_FRAMEWORKS_SUBDIRS) \
 	$(MCA_ompi_FRAMEWORK_COMPONENT_STATIC_SUBDIRS) . mpi/cxx \
 	$(OMPI_MPIEXT_MPIFH_DIRS) mpi/fortran/mpif-h \

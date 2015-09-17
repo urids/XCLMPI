@@ -16,14 +16,15 @@ for (i = 0; i < numDecls; i++) {
 			taskDevMap[i].min_tskIdx=-1; //By default each device has no assigned task.
 }
 
-readTaskBinding(taskDevMap); //defined in taskScheduling.c to read taskSched.cfg file.
+readTaskBinding(taskDevMap); //function defined in taskScheduling.c to read taskSched.cfg file.
 
 debug_print("1.- read taskDevMap succeed!!\n");
+
+
 	switch (devSelection) {
 	case ALL_DEVICES:
-
+		//here we allocate space for the local taskList.
 		taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_numTasks);
-		//int assigned = 0;
 
 		//Each task needs a handler (pointer) to its device
 		for (i = 0; i < l_numTasks; i++) {
@@ -31,9 +32,9 @@ debug_print("1.- read taskDevMap succeed!!\n");
 		}
 
 
-
+		//Here we fill the taskList and create the memory Racks.
 		for (i = 0; i <l_numTasks; i++) {
-			if(taskDevMap[i].min_tskIdx!=(-1))//perform resource allocation iff has any assignation.
+			if(taskDevMap[i].min_tskIdx!=(-1))//perform resource allocation iff has any assign.
 			for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
 				debug_print("-----matching task %d ------\n",j);
 

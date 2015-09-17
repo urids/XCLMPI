@@ -169,6 +169,45 @@ pinit.lo: pinit.c ../../../../ompi/include/ompi_config.h \
  ../../../../ompi/group/group.h ../../../../ompi/proc/proc.h \
  ../../../../ompi/include/ompi/types.h ../../../../ompi/group/group_dbg.h \
  ../../../../ompi/mca/coll/coll.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/commsBench.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/dvMgmt.h /usr/include/dlfcn.h \
+ /usr/include/x86_64-linux-gnu/bits/dlfcn.h \
+ ../../../../ompi/include/mpi.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/Device.h \
+ /usr/local/cuda-5.5/include/CL/cl.h \
+ /usr/local/cuda-5.5/include/CL/cl_platform.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.7/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.7/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.7/include/mm_malloc.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.7/include/emmintrin.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/Device.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/PUsMap.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/task.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/taskProcedures.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/task.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h \
+ /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/huge_val.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
+ /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
+ /usr/include/x86_64-linux-gnu/bits/inf.h \
+ /usr/include/x86_64-linux-gnu/bits/nan.h \
+ /usr/include/x86_64-linux-gnu/bits/mathdef.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathinline.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../tskMgmt/deviceMap.h \
+ ../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../c/taskMap.h \
+ ../../../mpiext/XCLFrame/scheduling/commsInfo.h \
  ../../../../ompi/mpi/c/profile/defines.h
 
 ../../../../ompi/include/ompi_config.h:
@@ -600,5 +639,87 @@ pinit.lo: pinit.c ../../../../ompi/include/ompi_config.h \
 ../../../../ompi/group/group_dbg.h:
 
 ../../../../ompi/mca/coll/coll.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/commsBench.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/dvMgmt.h:
+
+/usr/include/dlfcn.h:
+
+/usr/include/x86_64-linux-gnu/bits/dlfcn.h:
+
+../../../../ompi/include/mpi.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/Device.h:
+
+/usr/local/cuda-5.5/include/CL/cl.h:
+
+/usr/local/cuda-5.5/include/CL/cl_platform.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/xmmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/mmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/mm_malloc.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/emmintrin.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/devicesInitialization.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/deviceExploration.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/Device.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/localDevices.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/deviceMgmt/../errorMgmt/errorHandling.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/PUsMap.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/task.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/Device.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/taskProcedures.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/task.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../errorMgmt/errorHandling.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/localDevices.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/bufferFunctions.h:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_val.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_valf.h:
+
+/usr/include/x86_64-linux-gnu/bits/huge_vall.h:
+
+/usr/include/x86_64-linux-gnu/bits/inf.h:
+
+/usr/include/x86_64-linux-gnu/bits/nan.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathdef.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathinline.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../Device.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../taskMgmt/task.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../multiDeviceMgmt/taskMgmt/../deviceMgmt/memMgmt/../../errorMgmt/errorHandling.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../tskMgmt/deviceMap.h:
+
+../../../mpiext/XCLFrame/c/binding/dvMgmt/../../../c/taskMap.h:
+
+../../../mpiext/XCLFrame/scheduling/commsInfo.h:
 
 ../../../../ompi/mpi/c/profile/defines.h:
