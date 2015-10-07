@@ -31,12 +31,14 @@ debug_print("1.- read taskDevMap succeed!!\n");
 			taskList[i].device = (Device*) malloc(1*sizeof(Device)); //each task has only 1 device.
 		}
 
-
+//int advance=0;
 		//Here we fill the taskList and create the memory Racks.
-		for (i = 0; i <l_numTasks; i++) {
+		//for (i = 0; i <l_numTasks; i++) {
+		for (i = 0; i <numDecls; i++) {
+			//advance=taskDevMap[i].max_tskIdx-taskDevMap[i].min_tskIdx+1;
 			if(taskDevMap[i].min_tskIdx!=(-1))//perform resource allocation iff has any assign.
 			for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
-				debug_print("-----matching task %d ------\n",j);
+				debug_print("-----matching task %d , %d- %d ------\n",j,taskDevMap[i].min_tskIdx,taskDevMap[i].max_tskIdx);
 
 				taskList[j].device = taskDevMap[i].mappedDevice;
 				taskList[j].numTrays = 0;
@@ -60,6 +62,7 @@ debug_print("1.- read taskDevMap succeed!!\n");
 					}
 				}
 			}
+
 		}
 
 		break;

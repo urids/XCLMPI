@@ -20,7 +20,7 @@ int commsBenchmark(commsInfo* cmInf){
 
 	//*(cmInf->BW_Mtx)=0.0;
 
-	int l_PUs=OMPI_collectDevicesInfo(ALL_DEVICES, MPI_COMM_WORLD);
+	int l_PUs=OMPI_CollectDevicesInfo(ALL_DEVICES, MPI_COMM_WORLD);
 
 
 	//initialize the task management system
@@ -118,7 +118,7 @@ int commsBenchmark(commsInfo* cmInf){
 	}
 
 
-	//int numTasks=OMPI_collectTaskInfo(ALL_DEVICES, MPI_COMM_WORLD);
+	//int numTasks=OMPI_CollectTaskInfo(ALL_DEVICES, MPI_COMM_WORLD);
 
 	L_Mtx=malloc(sizeof(float)*l_PUs*l_PUs);
 	BW_Mtx=malloc(sizeof(float)*l_PUs*l_PUs);

@@ -25,11 +25,13 @@
 //            int OMPI_commit_EntityType(int blockcount, int* blocklen, MPI_Aint* displacements, MPI_Datatype* basictypes, MPI_Datatype * newDatatype);
 
 
-OMPI_DECLSPEC int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm); //this function returns global number of devices in the system
-OMPI_DECLSPEC int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm); //first parameter for this represents "ALL" or "GPUs" this function returns
-OMPI_DECLSPEC int OMPI_XclCreateKernel(MPI_Comm comm,char* srcPath,char* kernelName);
+OMPI_DECLSPEC int OMPI_CollectDevicesInfo(int devSelection, MPI_Comm comm); //this function returns global number of devices in the system
+OMPI_DECLSPEC int OMPI_CollectTaskInfo(int devSelection, MPI_Comm comm); //first parameter for this represents "ALL" or "GPUs" this function returns
+//OMPI_DECLSPEC int OMPI_XclCreateKernel(MPI_Comm comm,char* srcPath,char* kernelName);
+OMPI_DECLSPEC int OMPI_XclSetProcedure(MPI_Comm comm,char* srcPath,char* kernelName);
 //OMPI_DECLSPEC int OMPI_XclExecKernel(MPI_Comm communicator,int selTask,int globalThreads, int localThreads,const char * fmt, ...) __attribute__((format (printf, 5, 6)));
-OMPI_DECLSPEC int OMPI_XclExecKernel(MPI_Comm communicator,int selTask,int workDim, size_t * globalThreads, size_t * localThreads,const char * fmt, ...) __attribute__((format (printf, 6, 7)));
+OMPI_DECLSPEC int OMPI_XclExecTask(MPI_Comm communicator,int selTask,int workDim, size_t * globalThreads, size_t * localThreads,const char * fmt, ...) __attribute__((format (printf, 6, 7)));
+//TODO: new Scatter (const char* datafileName, int* count, MPI_Datatype MPIentityType, int trayIdx, MPI_Comm comm);
 OMPI_DECLSPEC int OMPI_XclScatter(const char* datafileName, int* count, MPI_Datatype MPIentityType, void* hostbuffer, int trayIdx, MPI_Comm comm);
 OMPI_DECLSPEC int OMPI_XclGather(int trayIdx, int count, MPI_Datatype MPIentityType,void **hostbuffer, const char* datafileName , MPI_Comm comm);
 OMPI_DECLSPEC int OMPI_XclSend(int trayIdx, int count, MPI_Datatype MPIentityType, int src_task, int dest_task, int TAG, MPI_Comm comm); //TODO: offset parameter to from tray start

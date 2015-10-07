@@ -39,7 +39,7 @@ int l_numTasks;//Global variable declared in tskMgmt.h
 int numRanks, myRank, HostNamelen;
 
 
-int OMPI_collectDevicesInfo(int devSelection, MPI_Comm comm){
+int OMPI_CollectDevicesInfo(int devSelection, MPI_Comm comm){
 
 int i,j,k;
 int myRank,numRanks;
@@ -74,7 +74,7 @@ int l_numDevs;
 	return g_numDevs;
 }
 
-int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm){
+int OMPI_CollectTaskInfo(int devSelection, MPI_Comm comm){
 	int numRanks, myRank, HostNamelen;
 	int i,j,k; //indx variables.
 
@@ -107,6 +107,7 @@ int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm){
 	dlclose(tskMgmt_dlhandle);
 
 
+
 	int* RKS =(int*)malloc(numRanks*sizeof(int)); //RKS-> RanK Structure
 	MPI_Allgather(&l_numTasks,1,MPI_INT,RKS,1,MPI_INT,comm);
 
@@ -134,10 +135,9 @@ int OMPI_collectTaskInfo(int devSelection, MPI_Comm comm){
 }
 
 
-int OMPI_XclCreateKernel(MPI_Comm comm,char* srcPath, char* kernelName){
+int OMPI_XclSetProcedure(MPI_Comm comm,char* srcPath, char* kernelName){
 
-int i;
-
+	int i;
 	void *dlhandle;
 	int (*XclCreateKernel)(MPI_Comm comm,char* srcPath,char* kernelName,int l_numTasks);
 	char *error;
@@ -170,7 +170,7 @@ int i;
 //int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
 	//int localThreads, const char * fmt, ...) {
 
-int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask,int workDim, size_t * globalThreads,
+int OMPI_XclExecTask(MPI_Comm communicator, int g_selTask,int workDim, size_t * globalThreads,
 		size_t * localThreads, const char * fmt, ...) {
 
 	//Select the appropriate local task if any.
