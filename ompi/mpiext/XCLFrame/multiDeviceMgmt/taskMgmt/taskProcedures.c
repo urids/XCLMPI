@@ -209,7 +209,7 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 		/*
 		 * This must be done with pthreads because clEnqueueNDRangeKernel is synchronous for
-		 * some openCL implementations aka NVIDIA ='(...
+		 * some openCL implementations like NVIDIA ='(...
 		 *
 		 * */
 
@@ -285,7 +285,7 @@ int XclWaitFor(int l_numTasks, int* l_taskIds, MPI_Comm comm){
 			j=l_taskIds[i];
 			pthread_join(thds[j], NULL);
 		}
-		MPI_Barrier(comm);
+		//MPI_Barrier(comm);
 		return 0;
 }
 

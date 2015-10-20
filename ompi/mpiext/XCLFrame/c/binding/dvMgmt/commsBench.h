@@ -21,10 +21,11 @@
 
 //msg size starts in 16 MB and duplicates up to 128 MB
 #define MIN_SIZE (1<<24) //16 MB
-#define MAX_SIZE (1<<27) //128 MB
+#define MAX_SIZE (1<<25) //32 MB
 #define ONEGB (1<<30)
 #define MAX_BW_REPS 10 //usually 4 repetitions are enough to achieve the 128 MB.
-#define	LATENCY_REPS 1000
+#define	LATENCY_REPS 10
+#define ROOT 0
 
 int msgSz;
 int i,j;

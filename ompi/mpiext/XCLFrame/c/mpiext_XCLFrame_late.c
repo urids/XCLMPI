@@ -235,8 +235,13 @@ int OMPI_XclWaitAllTasks(MPI_Comm comm){
 }
 
  int OMPI_XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm){
+	int i; //index variable
+	int err;
+	int * l_ids=NULL;
+	int * tmp_l_ids=NULL;
+	int l_wTskSize=0;
 	void *dlhandle;
-
+	MPI_Comm_rank(comm, &myRank);
 	int (*XclWaitFor)(int numTasks, int* taskIds, MPI_Comm comm);
 	char *error;
 
@@ -252,8 +257,22 @@ int OMPI_XclWaitAllTasks(MPI_Comm comm){
 		fputs(error, stderr);
 		exit(1);
 	}
-	int err;
-	err = (*XclWaitFor)(numTasks,taskIds, comm);
+
+	for(i=0;i<numTasks;i++){
+		if (myRank == g_taskList[taskIds[i]].r_rank){
+			l_wTskSize++;
+			tmp_l_ids=realloc(l_ids,l_wTskSize*sizeof(int));
+			if (tmp_l_ids!=NULL){
+				l_ids=tmp_l_ids;
+			}
+			l_ids[l_wTskSize-1]=g_taskList[taskIds[i]].l_taskIdx;
+		}
+	}
+	if(l_wTskSize>0){ //Am I owner of a task?
+		err = (*XclWaitFor)(l_wTskSize,l_ids, comm);
+	}
+
+	MPI_Barrier(comm);
 
 	dlclose(dlhandle);
 	return MPI_SUCCESS;

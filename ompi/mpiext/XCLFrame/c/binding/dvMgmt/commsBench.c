@@ -18,10 +18,15 @@ int i,j,k;
 int commsBenchmark(commsInfo* cmInf){
 
 
+	int numRanks, myRank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+	MPI_Comm_size(MPI_COMM_WORLD, &numRanks);
+
 	//*(cmInf->BW_Mtx)=0.0;
 
-	int l_PUs=OMPI_CollectDevicesInfo(ALL_DEVICES, MPI_COMM_WORLD);
-
+	int g_PUs=OMPI_CollectDevicesInfo(ALL_DEVICES, MPI_COMM_WORLD);
+	int l_PUs=clXplr.numDevices;
+	printf("g_PUs=%d, l_PUs=%d \n",g_PUs,l_PUs);
 
 	//initialize the task management system
 	l_numTasks=l_PUs;
@@ -51,7 +56,7 @@ int commsBenchmark(commsInfo* cmInf){
 	taskList = (XCLtask*) malloc(sizeof(XCLtask) * l_PUs);
 
 
-	//Here we fill the taskList and create the memory Racks.
+	//Here we fill the local taskList and create the memory Racks.
 	for (i = 0; i <l_PUs; i++) {
 		for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
 			debug_print("-----matching task %d ------\n",j);
@@ -80,9 +85,7 @@ int commsBenchmark(commsInfo* cmInf){
 		}
 	}
 
-	int numRanks, myRank, HostNamelen;
-	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-	MPI_Comm_size(MPI_COMM_WORLD, &numRanks);
+
 
 	int* RKS =(int*)malloc(numRanks*sizeof(int)); //RKS-> RanK Structure
 	MPI_Allgather(&l_numTasks,1,MPI_INT,RKS,1,MPI_INT,MPI_COMM_WORLD);
@@ -98,7 +101,7 @@ int commsBenchmark(commsInfo* cmInf){
 		g_taskList[i].g_taskIdx=i;
 
 
-	//this section creates the global Rank map structure.
+	//this section creates the global taskList map (temporarily for benchmarking).
 	for(i=0,k=0;i<numRanks;i++){
 		for(j=0;j<RKS[i];j++){
 			g_taskList[k].r_rank=i;
@@ -106,8 +109,6 @@ int commsBenchmark(commsInfo* cmInf){
 			k++;
 		}
 	}
-
-
 
 	//end of task management system initialization
 
@@ -120,21 +121,50 @@ int commsBenchmark(commsInfo* cmInf){
 
 	//int numTasks=OMPI_CollectTaskInfo(ALL_DEVICES, MPI_COMM_WORLD);
 
-	L_Mtx=malloc(sizeof(float)*l_PUs*l_PUs);
-	BW_Mtx=malloc(sizeof(float)*l_PUs*l_PUs);
+	L_Mtx=malloc(sizeof(double)*g_PUs*g_PUs);
+	BW_Mtx=malloc(sizeof(double)*g_PUs*g_PUs);
 	(cmInf->BW_Mtx)=BW_Mtx;
 
-	for(i=0;i<l_PUs;i++){
+	for(i=0;i<g_PUs;i++){
 		err|=OMPI_XclWriteTaskBuffer(i, 0, sizeof(char)*MAX_SIZE, buffer, MPI_COMM_WORLD); //first task inits token to 1
 		err|=OMPI_XclMallocTaskBuffer(i, 1, sizeof(char)*MAX_SIZE,MPI_COMM_WORLD);//remaining tasks allocate space
+
+	}
+/*
+	if(myRank==1){
+		char* testRes=malloc(sizeof(char));
+		err |= OMPI_XclReadTaskBuffer(2, 0, sizeof(char), testRes, MPI_COMM_WORLD);
+		printf("%c data %c\n",buffer[0],testRes[0]);
+	}
+*/
+
+
+	MPI_Win ltcWin,bdwWin;
+
+	if (myRank == ROOT) {
+		MPI_Win_create(L_Mtx, sizeof(double)*g_PUs*g_PUs, 1, MPI_INFO_NULL,
+				MPI_COMM_WORLD, &ltcWin);
+	}
+	else {
+		MPI_Win_create(MPI_BOTTOM, 0, 1, MPI_INFO_NULL,
+				MPI_COMM_WORLD, &ltcWin);
 	}
 
 
+	 MPI_Win_fence(0, ltcWin);
+	 	if (myRank != ROOT){
+	 	//	MPI_Put(L_Mtx,1,MPI_FLOAT,ROOT,AintDisplacement,1,MPI_FLOAT,ltcWin);
+	 	//  MPI_Get(&n, 1, MPI_INT, 0, 0, 1, MPI_INT, nwin);
+	 	}
+	 MPI_Win_fence(0, ltcWin);
+
 	//latency test.
-	for(src=0;src<l_PUs;src++){
+
+	for(src=0;src<g_PUs;src++){
 		for(dst=0;dst<=src;dst++){
 			accumTime=0;
 			for(i=0;i<LATENCY_REPS;i++){
+
 				deltaT = 0;
 				T1 = MPI_Wtime(); // start time
 				err |= OMPI_XclSendRecv(src, 0, dst, 1, 1, MPI_CHAR,MPI_COMM_WORLD ); //SEND
@@ -143,15 +173,14 @@ int commsBenchmark(commsInfo* cmInf){
 				deltaT = T2-T1;
 				accumTime += deltaT;
 			}
-			L_Mtx[l_PUs*src+dst]=L_Mtx[src+l_PUs*dst]=(accumTime/LATENCY_REPS); //Symmetric mtx.
+			L_Mtx[g_PUs*src+dst]=L_Mtx[src+g_PUs*dst]=(accumTime/LATENCY_REPS); //Symmetric mtx.
 		}
 	}
 
 
-
 	//Bandwidth test.
 
-	for(src=0;src<l_PUs;src++){
+	for(src=0;src<g_PUs;src++){
 		for(dst=0;dst<=src;dst++){
 			msgSz=MIN_SIZE;
 			numBWTrials=0;
@@ -162,6 +191,8 @@ int commsBenchmark(commsInfo* cmInf){
 				err |= OMPI_XclSendRecv(src, 0, dst, 1, sizeof(char)*msgSz, MPI_CHAR,MPI_COMM_WORLD ); //SEND
 				err |= OMPI_XclSendRecv(dst, 1, src, 0, sizeof(char)*msgSz, MPI_CHAR,MPI_COMM_WORLD ); //SEND-BACK
 				T2 = MPI_Wtime(); // end time
+				printf("src: %d-dst: %d ",src,dst);
+				printf("%f-%f  %f \n",T2,T1,T2-T1);
 				deltaT = T2-T1;
 				Avg[numBWTrials]=2*msgSz/deltaT;
 				numBWTrials++;
@@ -171,7 +202,7 @@ int commsBenchmark(commsInfo* cmInf){
 			for(i=0;i<numBWTrials;i++){
 				sumAvgs+=Avg[i];
 			}
-			BW_Mtx[l_PUs*src+dst]=BW_Mtx[src+l_PUs*dst]=(sumAvgs/numBWTrials); //the matrix is symmetric.
+			BW_Mtx[g_PUs*src+dst]=BW_Mtx[src+g_PUs*dst]=(sumAvgs/numBWTrials); //the matrix is symmetric.
 		}
 	}
 
@@ -179,14 +210,14 @@ int commsBenchmark(commsInfo* cmInf){
 	//Average computations
 	float LAccum=0;
 	float BWAccum=0;
-	for(i=0;i<l_PUs;i++){
-		for(j=0;j<l_PUs;j++){
-			LAccum+=L_Mtx[l_PUs*i+j];
-			BWAccum+=BW_Mtx[l_PUs*i+j];
+	for(i=0;i<g_PUs;i++){
+		for(j=0;j<g_PUs;j++){
+			LAccum+=L_Mtx[g_PUs*i+j];
+			BWAccum+=BW_Mtx[g_PUs*i+j];
 		}
 	}
-	L=LAccum/(l_PUs*(l_PUs+1)/2);
-	BW=BWAccum/(l_PUs*(l_PUs+1)/2);
+	L=LAccum/(g_PUs*(g_PUs+1)/2);
+	BW=BWAccum/(g_PUs*(g_PUs+1)/2);
 
 	printf("Average Latency: %8.8f microSeconds\n",L*1000000);
 	printf("Average Bandwidth: %8.8f GB/s\n",BW/(float)(ONEGB));
@@ -210,7 +241,7 @@ int commsBenchmark(commsInfo* cmInf){
 		}
 		printf("\n-------------------------------\n");
 	}*/
-
+/*
 	for(i=0;i<l_PUs;i++){
 		OMPI_XclFreeTaskBuffer(i, 0, MPI_COMM_WORLD);
 		OMPI_XclFreeTaskBuffer(i, 1, MPI_COMM_WORLD);
@@ -225,6 +256,6 @@ int commsBenchmark(commsInfo* cmInf){
 	taskList=NULL;
 	free(g_taskList);
 	g_taskList=NULL;
-
+*/
 	return 0;
 }
