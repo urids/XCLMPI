@@ -130,7 +130,7 @@ int XclWaitAllTasks(MPI_Comm comm){
  }
 
 int XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm){
-//global to local task's Id conversion.
+	//global to local task's Id conversion.
 
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
@@ -139,9 +139,11 @@ int XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm){
 	int * l_tasks=NULL;
 	int l_taskCounter=0;
 	int i,j;
+/*
 	for(i=0;i<numTasks;i++){
 		j=taskIds[i];
 		if(myRank==g_taskList[j].r_rank){
+			//printf("rank %d starts to wait for gTask %d -> lTask %d\n",myRank,j,g_taskList[taskIds[i]].l_taskIdx);
 			l_taskCounter++;
 
 			int * tmp_l_task;
@@ -157,31 +159,33 @@ int XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm){
 			}
 		}
 	}
+*/
 
+	//finall function call to multiDeviceMgmt.
+//	if(l_taskCounter > 0){
+	if(numTasks>0){
+		void *dlhandle;
 
-//finall function call to multiDeviceMgmt.
-if(l_taskCounter > 0){
-	void *dlhandle;
+		int (*XclWaitFor)(int l_numTasks, int* l_taskIds, MPI_Comm comm);
+		char *error;
 
-	int (*XclWaitFor)(int l_numTasks, int* l_taskIds, MPI_Comm comm);
-	char *error;
+		dlhandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
+		if (!dlhandle) {
+			fputs(dlerror(), stderr);
+			exit(1);
+		}
 
-	dlhandle = dlopen("libmultiDeviceMgmt.so", RTLD_LAZY);
-	if (!dlhandle) {
-		fputs(dlerror(), stderr);
-		exit(1);
+		XclWaitFor = dlsym(dlhandle, "XclWaitFor");
+
+		if ((error = dlerror()) != NULL) {
+			fputs(error, stderr);
+			exit(1);
+		}
+		int err;
+		//err = (*XclWaitFor)(l_taskCounter,l_tasks, comm);
+		err = (*XclWaitFor)(numTasks,taskIds, comm);
+		dlclose(dlhandle);
 	}
-
-	XclWaitFor = dlsym(dlhandle, "XclWaitFor");
-
-	if ((error = dlerror()) != NULL) {
-		fputs(error, stderr);
-		exit(1);
-	}
-	int err;
-	err = (*XclWaitFor)(l_taskCounter,l_tasks, comm);
-	dlclose(dlhandle);
-}
 
 
 	return MPI_SUCCESS;

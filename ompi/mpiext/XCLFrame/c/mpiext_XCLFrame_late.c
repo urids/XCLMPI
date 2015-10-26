@@ -173,9 +173,13 @@ int OMPI_XclSetProcedure(MPI_Comm comm,char* srcPath, char* kernelName){
 int OMPI_XclExecTask(MPI_Comm communicator, int g_selTask,int workDim, size_t * globalThreads,
 		size_t * localThreads, const char * fmt, ...) {
 
+	int myRank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+
+
 	//Select the appropriate local task if any.
 	if (myRank == g_taskList[g_selTask].r_rank) {
-
+		debug_print("...task %d requested in rank %d \n",g_selTask,myRank);
 		int l_selTask= g_taskList[g_selTask].l_taskIdx;
 
 		void *dlhandle;

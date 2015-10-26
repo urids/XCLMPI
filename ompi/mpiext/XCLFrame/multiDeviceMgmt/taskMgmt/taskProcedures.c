@@ -156,7 +156,7 @@ void * enqueTaskReq(void *args) {
 
 	//chkerr(status, "Enqueuing Kernels ", __FILE__, __LINE__);
 	//debug_print("Enqueuing Kernel successful..\n");
-
+	debug_print("Enqueue Kernel successful..\n");
 	//pthread_exit(NULL);
 }
 
@@ -243,7 +243,8 @@ if(selTask==-1){ // -1 means all tasks must enqueue this kernel.
 
 		//printf("task: %d Requesting at time: %s \n",numReq++,asctime(timeinfo));
 	  	pthread_create(&thds[selTask], NULL, enqueTaskReq, (void*) th_Args[selTask]);
-        //printf("task: %d rank  Requested at time: %s \n",(numReq++),asctime(timeinfo));
+	  	debug_print(" -- task %d requested in rank: %d -- \n",selTask,myRank);
+	  	//printf("task: %d rank  Requested at time: %s \n",(numReq++),asctime(timeinfo));
 		//pthread_attr_destroy(&attr);
 
 /*
@@ -280,7 +281,7 @@ int XclWaitAllTasks(int numTasks,MPI_Comm comm){
 
 int XclWaitFor(int l_numTasks, int* l_taskIds, MPI_Comm comm){
 	int i,j;
-
+	debug_print("waiting for %d \n", *l_taskIds);
 		for(i=0;i<l_numTasks;i++){
 			j=l_taskIds[i];
 			pthread_join(thds[j], NULL);
