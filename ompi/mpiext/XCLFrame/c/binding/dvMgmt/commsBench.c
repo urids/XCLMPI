@@ -242,7 +242,7 @@ int commsBenchmark(commsInfo* cmInf){
 
 		MPI_Win_fence(0, bdwWin);
 
-		//fill the bandwidth matrix at ROOT
+		//fill the bandwidth matrix at ROOT__
 		for(src=mygPU_min;src<g_PUs;src++){
 			for(dst=mygPU_min;dst<=mygPU_max && dst<=src;dst++){
 				MPI_Put(&BW_Mtx[g_PUs*src+dst],1,MPI_FLOAT,ROOT,(g_PUs*src+dst)*(sizeof(float)),1,MPI_FLOAT,bdwWin);
