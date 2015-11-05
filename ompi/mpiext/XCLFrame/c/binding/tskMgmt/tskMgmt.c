@@ -180,15 +180,15 @@ return 0;
 }
 
 
-int XclCreateKernel(MPI_Comm comm,char* srcPath,char* kernelName,int numTasks){
+int XclCreateKernel(MPI_Comm comm, int l_selTask, char* srcPath,char* kernelName,int numTasks){
 
 
 	int i,j,k;
 	void *dlhandle;
-	int (*createProgram)(char*,int);
-	int (*buildProgram)(int);
-	int (*createKernel)(char*,int);
-	int (*kernelXplor)(int);
+	int (*createProgram)(int l_selTask, char*,int);
+	int (*buildProgram)(int l_selTask, int);
+	int (*createKernel)(int l_selTask, char*,int);
+	int (*kernelXplor)(int l_selTask, int);
 
 	char *error;
 
@@ -209,10 +209,10 @@ int XclCreateKernel(MPI_Comm comm,char* srcPath,char* kernelName,int numTasks){
 
 
 		int err;
-		err=(*createProgram)(srcPath,numTasks);
-		err|=(*buildProgram)(numTasks);
-		err|=(*createKernel)(kernelName,numTasks);
-		err|=(*kernelXplor)(numTasks);
+		err=(*createProgram)(l_selTask, srcPath,numTasks);
+		err|=(*buildProgram)(l_selTask, numTasks);
+		err|=(*createKernel)(l_selTask, kernelName,numTasks);
+		err|=(*kernelXplor)(l_selTask, numTasks);
 
 
 	dlclose(dlhandle);

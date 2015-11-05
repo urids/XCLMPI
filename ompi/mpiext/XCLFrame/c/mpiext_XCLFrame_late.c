@@ -135,42 +135,46 @@ int OMPI_CollectTaskInfo(int devSelection, MPI_Comm comm){
 }
 
 
-int OMPI_XclSetProcedure(MPI_Comm comm,char* srcPath, char* kernelName){
+int OMPI_XclSetProcedure(MPI_Comm comm, int g_selTask, char* srcPath, char* kernelName){
+	int myRank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+	//Select the appropriate local task if any.
+	if (myRank == g_taskList[g_selTask].r_rank) {
+		int i;
+		int l_selTask= g_taskList[g_selTask].l_taskIdx;
+		void *dlhandle;
+		int (*XclCreateKernel)(MPI_Comm comm, int l_selTask, char* srcPath,char* kernelName,int l_numTasks);
+		char *error;
 
-	int i;
-	void *dlhandle;
-	int (*XclCreateKernel)(MPI_Comm comm,char* srcPath,char* kernelName,int l_numTasks);
-	char *error;
+		dlhandle =dlopen("libtskMgmt.so",RTLD_LAZY);
+		if (!dlhandle) {
+			fputs(dlerror(), stderr);
+			exit(1);
+		}
 
-	dlhandle =dlopen("libtskMgmt.so",RTLD_LAZY);
-	if (!dlhandle) {
-		fputs(dlerror(), stderr);
-		exit(1);
+		XclCreateKernel = dlsym(dlhandle, "XclCreateKernel");
+
+		if ((error = dlerror()) != NULL ) {
+			fputs(error, stderr);
+			exit(1);
+		}
+
+		int err;
+		//take care here because clXplr will become the global and unique xploreInfo "object" maybe I should make it const
+
+		//TODO: this is only if devSelection=ALL_DEVICES; otherwise maybe we need a switch.
+		err=(*XclCreateKernel)(comm, l_selTask, srcPath,kernelName,l_numTasks);
+		//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,gpu,&taskSet);
+		//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,accel,&taskSet);
+		dlclose(dlhandle);
 	}
-
-	XclCreateKernel = dlsym(dlhandle, "XclCreateKernel");
-
-	if ((error = dlerror()) != NULL ) {
-		fputs(error, stderr);
-		exit(1);
-	}
-
-	int err;
-	//take care here because clXplr will become the global and unique xploreInfo "object" maybe I should make it const
-
-	//TODO: this is only if devSelection=ALL_DEVICES; otherwise maybe we need a switch.
-	err=(*XclCreateKernel)(comm,srcPath,kernelName,l_numTasks);
-	//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,gpu,&taskSet);
-	//err|=(*XclCreateKernel)(comm,srcPath,kernelName,& clXplr,accel,&taskSet);
-	dlclose(dlhandle);
-
 	return MPI_SUCCESS;
 }
 
 //int OMPI_XclExecKernel(MPI_Comm communicator, int g_selTask, int globalThreads,
 	//int localThreads, const char * fmt, ...) {
 
-int OMPI_XclExecTask(MPI_Comm communicator, int g_selTask,int workDim, size_t * globalThreads,
+int OMPI_XclExecTask(MPI_Comm communicator, int g_selTask, int workDim, size_t * globalThreads,
 		size_t * localThreads, const char * fmt, ...) {
 
 	int myRank;

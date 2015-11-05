@@ -18,11 +18,11 @@ int initNewBuffer(int taskIdx, int trayIdx, int bufferSize ){
 
 	int memIdx=taskList[taskIdx].numTrays; //here we query how many buffers has this task
 	int myRack=taskList[taskIdx].Rack;
-	//printf("initializing ::: task: %d rack: %d tray: %d :::\n",taskIdx,myRack,trayIdx);
+	debug_print("initializing ::: task: %d rack: %d tray: %d :::\n",taskIdx,myRack,trayIdx);
 
 	//if (trayIdx==0 && memIdx==0 ){ //if this is the first tray to be initialized.
-	//printf("task %d has --> %d \n",taskIdx,memIdx);
-	if (memIdx==0){
+	debug_print("task %d has -%d- trays \n",taskIdx,memIdx);
+	if (memIdx==0){//TODO: WARNING!!!!! memindx is cero on rack? <- This is BUG DETECTED
 			taskList[taskIdx].trayInfo = malloc(sizeof(XCLTrayInfo));
 			taskList[taskIdx].device[0].memHandler[myRack] = malloc(trayIdx+1 * sizeof(cl_mem)); //init the first device mem space.
 			taskList[taskIdx].numTrays=trayIdx+1;

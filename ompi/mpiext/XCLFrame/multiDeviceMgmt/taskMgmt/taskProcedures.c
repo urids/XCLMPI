@@ -3,11 +3,11 @@
 #define DEBUG 0
 #define PROFILE 0
 
-int createProgram(char* srcPath,int numTasks){
+int createProgram(int l_selTask, char* srcPath,int numTasks){
 	int status;
-	int i;
+	//int i;
 	FILE *fp;
-	for (i = 0; i < numTasks; i++) {
+	//for (i = 0; i < numTasks; i++) {
 
 		fp = fopen(srcPath, "r");
 		if (!fp) {
@@ -19,43 +19,42 @@ int createProgram(char* srcPath,int numTasks){
 		int sz = ftell(fp);
 		fseek(fp, 0L, SEEK_SET);
 
-		taskList[i].code = malloc(sizeof(XCLcode));
-		taskList[i].code[0].source_str = (char*) malloc(sz+1);
-		taskList[i].code[0].source_size = fread(taskList[i].code[0].source_str,
+		taskList[l_selTask].code = malloc(sizeof(XCLcode));
+		taskList[l_selTask].code[0].source_str = (char*) malloc(sz+1);
+		taskList[l_selTask].code[0].source_size = fread(taskList[l_selTask].code[0].source_str,
 				1, sz, fp);
 
-		taskList[i].CLprogram = malloc(sizeof(cl_program));
+		taskList[l_selTask].CLprogram = malloc(sizeof(cl_program));
 
-		taskList[i].CLprogram[0] = clCreateProgramWithSource(
-				taskList[i].device[0].context, 1,
-				(const char **) &taskList[i].code[0].source_str,
-				(const size_t *) &taskList[i].code[0].source_size, &status);
+		taskList[l_selTask].CLprogram[0] = clCreateProgramWithSource(
+				taskList[l_selTask].device[0].context, 1,
+				(const char **) &taskList[l_selTask].code[0].source_str,
+				(const size_t *) &taskList[l_selTask].code[0].source_size, &status);
 
 		chkerr(status, "Creating Program ", __FILE__, __LINE__);
 	fclose(fp);
-	}
+	//}
 
 	return status;
 }
 
-int buildProgram(int numTasks) {
+int buildProgram(int l_selTask, int numTasks) {
 	int status;
-	int i;
-
-	for (i = 0; i < numTasks; i++) {
-		status = clBuildProgram(taskList[i].CLprogram[0], 1,
-				&taskList[i].device[0].deviceId, NULL, NULL, NULL);
+	//int i;
+	//for (i = 0; i < numTasks; i++) {
+		status = clBuildProgram(taskList[l_selTask].CLprogram[0], 1,
+				&taskList[l_selTask].device[0].deviceId, NULL, NULL, NULL);
 
 		if (status == CL_BUILD_PROGRAM_FAILURE) {
 			// Determine the size of the log
 			size_t log_size;
-			clGetProgramBuildInfo(taskList[i].CLprogram[0], taskList[i].device[0].deviceId, CL_PROGRAM_BUILD_LOG,
+			clGetProgramBuildInfo(taskList[l_selTask].CLprogram[0], taskList[l_selTask].device[0].deviceId, CL_PROGRAM_BUILD_LOG,
 					0, NULL, &log_size);
 
 			// Allocate memory for the log
 			char *log = (char *) malloc(log_size+1);
 			// Get the log
-			clGetProgramBuildInfo(taskList[i].CLprogram[0], taskList[i].device[0].deviceId, CL_PROGRAM_BUILD_LOG,
+			clGetProgramBuildInfo(taskList[l_selTask].CLprogram[0], taskList[l_selTask].device[0].deviceId, CL_PROGRAM_BUILD_LOG,
 					log_size, log, NULL);
 			log[log_size+1] = '\0';
 			// Print the log
@@ -63,42 +62,42 @@ int buildProgram(int numTasks) {
 		}
 
 		chkerr(status, "Building Program ", __FILE__, __LINE__);
-	}
+	//}
 
 	return status;
 }
 
-int createKernel(char* kernelName, int numTasks){  //TODO: here we will need a list of kernels.
+int createKernel(int l_selTask, char* kernelName, int numTasks){  //TODO: here we will need a list of kernels.
 	int status;
-	int i;
-	for(i=0;i<numTasks;i++){
-	taskList[i].kernel=malloc(sizeof(XCLkernel));
-	taskList[i].kernel[0].kernel = clCreateKernel(taskList[i].CLprogram[0], kernelName, &status);
+	//int i;
+	//for(i=0;i<numTasks;i++){
+	taskList[l_selTask].kernel=malloc(sizeof(XCLkernel));
+	taskList[l_selTask].kernel[0].kernel = clCreateKernel(taskList[l_selTask].CLprogram[0], kernelName, &status);
 	chkerr(status, "error at: creating the kernel:", __FILE__, __LINE__);
-	}
+	//}
 	return status;
 }
 
 
-int kernelXplor(int numTasks){
+int kernelXplor(int l_selTask, int numTasks){
 	int status;
-	int i;
+	//int i;
 	size_t kernNameSize;
 	cl_uint numArgs;
-	for(i=0;i<numTasks;i++){
+	//for(i=0;i<numTasks;i++){
 
-	status=clGetKernelInfo(taskList[i].kernel[0].kernel,CL_KERNEL_FUNCTION_NAME,0,NULL,&kernNameSize);
+	status=clGetKernelInfo(taskList[l_selTask].kernel[0].kernel,CL_KERNEL_FUNCTION_NAME,0,NULL,&kernNameSize);
 	char* kernName=malloc(kernNameSize*sizeof(char));
-	status=clGetKernelInfo(taskList[i].kernel[0].kernel,CL_KERNEL_FUNCTION_NAME,kernNameSize,(char*)kernName,NULL);
+	status=clGetKernelInfo(taskList[l_selTask].kernel[0].kernel,CL_KERNEL_FUNCTION_NAME,kernNameSize,(char*)kernName,NULL);
 
-	status=clGetKernelInfo(taskList[i].kernel[0].kernel,CL_KERNEL_NUM_ARGS,sizeof(cl_uint),&numArgs,NULL);
+	status=clGetKernelInfo(taskList[l_selTask].kernel[0].kernel,CL_KERNEL_NUM_ARGS,sizeof(cl_uint),&numArgs,NULL);
 
 	chkerr(status, "error at: getting kernel info", __FILE__, __LINE__);
 
 	debug_print("\n Debug:  %s, has %u args\n",kernName,numArgs);
 
-	taskList[i].kernel[0].numArgs=numArgs;
-	}
+	taskList[l_selTask].kernel[0].numArgs=numArgs;
+	//}
 
 return status;
 }

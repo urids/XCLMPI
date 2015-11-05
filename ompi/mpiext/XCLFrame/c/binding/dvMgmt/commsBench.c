@@ -347,6 +347,12 @@ if(myRank==ROOT){
 	}
 
 	free(buffer);
+	for (i = 0; i <l_PUs; i++) {
+			for (j = taskDevMap[i].min_tskIdx; j <= taskDevMap[i].max_tskIdx;j++) {
+				debug_print("-----matching task %d ------\n",j);
+				taskList[j].numTrays = 0;
+			}
+	}
 
 	//TODO: must we deallocate the number of racks created for each device??
 	free(taskDevMap);
