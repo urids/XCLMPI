@@ -6,7 +6,7 @@ int readBuffer(int taskId,int trayIdx, int bufferSize, void * hostBuffer){
 	int status;
 	int myRack=taskList[taskId].Rack;
 
-	debug_print("No Rack= %d",myRack);
+	debug_print("No. l_Task: %d, No. Rack= %d \n",taskId,myRack);
 	status = clEnqueueReadBuffer(taskList[taskId].device[0].queue,
 					taskList[taskId].device[0].memHandler[myRack][trayIdx], CL_TRUE, 0, bufferSize,
 					hostBuffer, 0, NULL, NULL);

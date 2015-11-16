@@ -8,10 +8,10 @@ int createProgram(int l_selTask, char* srcPath,int numTasks){
 	//int i;
 	FILE *fp;
 	//for (i = 0; i < numTasks; i++) {
-
 		fp = fopen(srcPath, "r");
 		if (!fp) {
-			fprintf(stderr, "Failed to load kernels source file.\n");
+			fprintf(stderr, "Can not find or load kernels source file.\n");
+			perror ("The following error occurred");
 			exit(1);
 		}
 

@@ -207,11 +207,12 @@ int XclCreateKernel(MPI_Comm comm, int l_selTask, char* srcPath,char* kernelName
 		exit(1);
 	}
 
-
+	debug_print("0.-kernelSrcFile: %s\n",srcPath);
 		int err;
 		err=(*createProgram)(l_selTask, srcPath,numTasks);
 		err|=(*buildProgram)(l_selTask, numTasks);
-		err|=(*createKernel)(l_selTask, kernelName,numTasks);
+
+		err|=(*createKernel)(l_selTask, kernelName, numTasks);
 		err|=(*kernelXplor)(l_selTask, numTasks);
 
 

@@ -241,7 +241,7 @@ int OMPI_XclSendRecv(int src_task, int src_trayIdx,
 				libHandler = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
 
 				if (!libHandler) {
-					perror("library not found or could not be opened AT: OMPI_XclRecv");
+					perror("library multiDeviceMgmt not found or could not be opened AT: OMPI_XclRecv");
 					exit(1);
 				}
 
