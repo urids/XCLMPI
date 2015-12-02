@@ -431,6 +431,16 @@ typedef int (MPI_Grequest_cancel_function)(void *, int);
 #define CPU_DEVICES 2
 #define ACC_DEVICES 3
 
+#ifndef __TASKST__
+#define __TASKST__ 1
+
+typedef struct task_st{
+	int ID;
+	const char * ProcName;
+	const char * ProcPath;
+}task_t;
+#endif
+
 
 /*
  * More constants

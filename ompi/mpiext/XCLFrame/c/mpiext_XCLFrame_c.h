@@ -50,3 +50,13 @@ OMPI_DECLSPEC int OMPI_XclFreeTaskBuffer(int g_taskIdx, int trayIdx, MPI_Comm co
 
 OMPI_DECLSPEC int OMPI_XclWaitAllTasks(MPI_Comm comm);
 OMPI_DECLSPEC int OMPI_XclWaitFor(int numTasks, int* taskIds, MPI_Comm comm);
+
+
+/***************************************/
+/*  TASK DEPENDENCY TRACKING FUNCTIONS */
+/***************************************/
+
+
+
+OMPI_DECLSPEC int OMPI_XclTaskDependency(const int src_task, const int src_trayIdx, const int dest_task, const int dest_trayIdx, MPI_Comm comm);
+
