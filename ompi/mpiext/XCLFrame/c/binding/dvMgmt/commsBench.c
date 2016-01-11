@@ -319,7 +319,7 @@ if(myRank==ROOT){
 	printf("Average Bandwidth: %8.8f GB/s\n",BW/(float)(ONEGB));
 
 	//print matrices
-/*
+
 	for(i=0;i<g_PUs;i++){
 		printf("| ");
 		for(j=0;j<g_PUs;j++){
@@ -329,7 +329,7 @@ if(myRank==ROOT){
 	}
 
 	printf("\n\n");
-*/
+
 	for(i=0;i<g_PUs;i++){
 		printf("| ");
 		for(j=0;j<g_PUs;j++){

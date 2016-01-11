@@ -34,7 +34,9 @@ int OMPI_XclReadTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize, void * ho
 }
 
 //TODO: should I pass a rank to enable say on which task lives host buffer?
-//TODO: should I enable pass a rank where host buffer lives?
+//TODO: REVIEW should I enable pass a rank where host buffer lives? =|
+//TODO: SEVERE "Intra device copy do not automates buffer allocation =("
+
 int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * hostBuffer, MPI_Comm comm){
 	int myRank;
 	MPI_Comm_rank(comm, &myRank);
@@ -48,7 +50,7 @@ int OMPI_XclWriteTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize,void * ho
 		memWrtHandle = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
 
 		if (!memWrtHandle) {
-			perror("library not found or could not be opened AT: OMPI_XclRecv");
+			perror("library not found or could not be opened AT: OMPI_XclWriteTaskBuffer");
 			exit(1);
 		}
 
@@ -77,7 +79,7 @@ int OMPI_XclMallocTaskBuffer(int g_taskIdx, int trayIdx, int bufferSize, MPI_Com
 		memHandle = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
 
 		if (!memHandle) {
-			perror("library not found or could not be opened AT: OMPI_XclRecv");
+			perror("library not found or could not be opened AT: OMPI_XclMallocTaskBuffer");
 			exit(1);
 		}
 
@@ -241,7 +243,7 @@ int OMPI_XclSendRecv(int src_task, int src_trayIdx,
 				libHandler = dlopen("libmultiDeviceMgmt.so", RTLD_NOW);
 
 				if (!libHandler) {
-					perror("library multiDeviceMgmt not found or could not be opened AT: OMPI_XclRecv");
+					perror("library multiDeviceMgmt not found or could not be opened AT: OMPI_XclSendRecv");
 					exit(1);
 				}
 
